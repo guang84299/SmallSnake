@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="25" tilewidth="46" tileheight="46">
+ <tileset firstgid="1" name="road" tilewidth="46" tileheight="58">
+  <image source="road.png" width="184" height="58"/>
+ </tileset>
+ <layer name="layer1" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgxWwoNG0todegBGImfBgZjq7ZxSMAnoDAGcQAB8=
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos1" x="161" y="482.333"/>
+  <object name="startPos2" x="114.333" y="483"/>
+  <object name="startPos3" x="114" y="528"/>
+  <object name="stone" x="250.667" y="300"/>
+  <object name="apple" x="297.333" y="437.333"/>
+  <object name="trap" x="252" y="482">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="299.333" y="482">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="344" y="482">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="389.333" y="482.333">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="438" y="482.667">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="344" y="392">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+  </object>
+  <object name="exit" x="528" y="483"/>
+ </objectgroup>
+</map>

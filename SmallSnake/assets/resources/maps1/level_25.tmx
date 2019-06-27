@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="25" tilewidth="46" tileheight="46">
+ <tileset firstgid="1" name="road" tilewidth="46" tileheight="58">
+  <image source="road.png" width="184" height="58"/>
+ </tileset>
+ <layer name="layer1" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4B8wAjETFDMPMBuGQWjYKgAAB78AAk=
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowAVsAy0A0bBKBjmAAATCAAF
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwwUwAjEzHv4oGAWjYHAAACKAAAk=
+  </data>
+ </layer>
+ <layer name="layer4" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgw2wDLQDRsEoGAU0BQAVCAAF
+  </data>
+ </layer>
+ <layer name="layer5" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtAIsBPijYBSMgpEJACYYAAk=
+  </data>
+ </layer>
+ <layer name="layer6" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFhADLQDtgFIyCUTCsAAAWyAAF
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos1" x="207" y="437.333"/>
+  <object name="startPos2" x="160.667" y="438.333"/>
+  <object name="startPos3" x="160" y="483"/>
+  <object name="trap" x="299" y="437">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="apple" x="297.333" y="298.667"/>
+  <object name="exit" x="390" y="346.333"/>
+ </objectgroup>
+</map>

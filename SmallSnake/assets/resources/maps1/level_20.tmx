@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="25" tilewidth="46" tileheight="46">
+ <tileset firstgid="1" name="road" tilewidth="46" tileheight="58">
+  <image source="road.png" width="184" height="58"/>
+ </tileset>
+ <layer name="layer1" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2BwA0YgZgJiZgLy+NSMglEwmAAAK7QADw==
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4A+gAVKMwIxExbMjEXtKBgFwxEAAEagABc=
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4B2gGWgHTAKRsEgBAAR2AAF
+  </data>
+ </layer>
+ <layer name="layer4" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4AwYBloB4yCUTCMAAASuAAF
+  </data>
+ </layer>
+ <layer name="layer5" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwwUwAjETEmbGooaFri4aBaNgFGADADfwAA8=
+  </data>
+ </layer>
+ <layer name="layer6" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgxWwDLQDRsEoGAU0AQAU6AAF
+  </data>
+ </layer>
+ <layer name="layer7" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtAYsA+2AUTAKRsGgAgAVyAAF
+  </data>
+ </layer>
+ <layer name="layer8" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFxAKWgXbAKBgFo2BYAAAWqAAF
+  </data>
+ </layer>
+ <layer name="layer9" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh5gGWgHTAKRsEoGNEAABeIAAU=
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos1" x="299" y="482.333"/>
+  <object name="startPos2" x="252.333" y="483"/>
+  <object name="startPos3" x="205" y="483.667"/>
+  <object name="apple" x="114.333" y="437.667"/>
+  <object name="stone" x="161.333" y="343.667"/>
+  <object name="stone" x="344" y="344"/>
+  <object name="exit" x="574" y="343.667"/>
+ </objectgroup>
+</map>

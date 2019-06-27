@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="25" tilewidth="46" tileheight="46">
+ <tileset firstgid="1" name="road" tilewidth="46" tileheight="58">
+  <image source="road.png" width="184" height="58"/>
+ </tileset>
+ <layer name="layer1" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4D+gBGImaCYeYDdMgpGAb0BAB08AAk=
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4A6gGWgHTAKRsEQAQASKAAF
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFowAVsAy0A0bBKBjmAAATCAAF
+  </data>
+ </layer>
+ <layer name="layer4" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwxUwAjETFDMPsFtGwSgYBQgAACIcAAk=
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos1" x="206.667" y="481.333"/>
+  <object name="startPos2" x="161.667" y="482.333"/>
+  <object name="startPos3" x="162.333" y="527.333"/>
+  <object name="apple" x="160.333" y="390"/>
+  <object name="exit" x="482" y="345.333"/>
+ </objectgroup>
+</map>
