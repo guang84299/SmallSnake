@@ -11,6 +11,7 @@ var config = require("config");
 cc.qianqista = qianqista;
 cc.sdk = sdk;
 cc.storage = storage;
+cc.config = config;
 cc.myscene = "load";
 cc.res = res;
 cc.GAME = {};
@@ -54,6 +55,9 @@ cc.Class({
             "prefab/game1/trap",
 
             "prefab/game2/block",
+
+            "prefab/game3/boom",
+            "prefab/game3/emitterAni",
 
             //"prefab/ui/box_car",
             //

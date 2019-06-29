@@ -88,11 +88,51 @@ module.exports = {
         this.ptoastcoinPools.put(coin);
     },
 
+    playAnim: function(path,frameNum,time,loop,callback,isRemove,isFlip)
+    {
+        if(loop == -1) loop = 999999;
+
+        var node = new cc.Node();
+        var sp = node.addComponent(cc.Sprite);
+        sp.trim = false;
+        sp.sizeMode = cc.Sprite.SizeMode.RAW;
+        var self = this;
+
+        var play = function(){
+            var i = 1;
+            if(isFlip) i = frameNum;
+            sp.schedule(function(){
+               self.setSpriteFrame(path+"/"+i,sp);
+                if(isFlip) i--;
+                else i++;
+            },time,frameNum);
+        };
+
+        var num = 1;
+        if(loop>0)
+        {
+            play();
+            num ++;
+        }
+        sp.schedule(function(){
+            if(num>loop)
+            {
+                if(callback) callback();
+                if(isRemove) node.destroy();
+            }
+            else
+                play();
+            num ++;
+        },time*(frameNum+1),loop);
+
+        return node;
+    },
+
 
     setSpriteFrame: function(url,sp)
     {
         cc.loader.loadRes(url, cc.SpriteFrame, function (err, spriteFrame) {
-            if(!err && sp)
+            if(!err && sp && cc.isValid(sp))
             {
                 sp.getComponent("cc.Sprite").spriteFrame = spriteFrame;
             }
