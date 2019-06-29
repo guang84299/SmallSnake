@@ -17,11 +17,9 @@ cc.Class({
         this.game = cc.find("Canvas").getComponent("game3");
 
         this.head = cc.find("head",this.node);
-        this.tail = cc.find("tail",this.node);
         this.body = cc.find("body",this.node);
         this.head.zIndex = 999;
         this.head.active = true;
-        this.tail.active = false;
         this.body.active = false;
 
         this.head.stopAllActions();
@@ -29,7 +27,6 @@ cc.Class({
 
         this.head.setContentSize(tiledSize);
         this.body.setContentSize(tiledSize);
-        this.tail.setContentSize(tiledSize);
 
 
         if(this.bodys && this.bodys.length>0)
@@ -47,15 +44,13 @@ cc.Class({
     {
         this.head.position = pos;
         this.body.position = pos;
-        this.tail.position = pos;
 
         this.head.angle = -90;
         this.body.angle = 0;
-        this.tail.angle = -90;
         this.isMing = false;
         this.dir = "";
         this.speed = 0.2;
-        this.boomSpeed = 1.3;
+        this.boomSpeed = 0.3;
         this.isCanBoom = false;
         this.isFirstBoom = true;
         this.isPass = false;
@@ -176,6 +171,19 @@ cc.Class({
 
     },
 
+    judgeHaveSnake: function(pos)
+    {
+        var min = Math.min(this.tiledSize.width/2,this.tiledSize.height/2);
+        var dis = this.head.position.sub(pos).mag();
+        if(dis<min) return true;
+        for(var i=0;i<this.bodys.length;i++)
+        {
+            dis = this.bodys[i].position.sub(pos).mag();
+            if(dis<min) return true;
+        }
+        return false;
+    },
+
     move: function(pos,tileGid)
     {
         var self = this;
@@ -189,26 +197,14 @@ cc.Class({
             })
         );
         this.head.runAction(ac);
-        for(var i=0;i<this.bodys.length;i++)
-        {
-            var body = this.bodys[i];
-            var p = null;
-            if(i ==0) p = this.head.position;
-            else p = this.bodys[i-1].position;
-            var ac = cc.moveTo(this.speed,p);
-            body.runAction(ac);
-        }
 
         var body = cc.instantiate(this.body);
-
-        var p = null;
-        if(this.bodys.length==0) p = this.head.position;
-        else p = this.bodys[this.bodys.length-1].position;
-
+        var p = this.head.position;
         body.position = p;
         body.active = true;
         this.node.addChild(body);
-        this.bodys.push(body);
+        this.bodys.unshift(body);
+        this.updateBodyDir(body);
 
         if(!this.isCanBoom)
         {
@@ -322,34 +318,22 @@ cc.Class({
     },
 
 
-    updateBody: function(index,isShow)
-    {
-        for(var i=0;i<this.bodys.length;i++)
-        {
-            if(this.bodys[i].index == index)
-            {
-                this.bodys[i].active = isShow;
-                break;
-            }
-        }
-    },
-
     updateHeadDir: function(dir)
     {
-        var ang = 0;
-        if(dir == "left") ang = 180;
-        else if(dir == "top") ang = 90;
-        else if(dir == "down") ang = -90;
+        var ang = 180;
+        if(dir == "left") ang = 0;
+        else if(dir == "top") ang = -90;
+        else if(dir == "down") ang = 90;
         this.head.angle = ang;
     },
 
-    updateTailDir: function(dir)
+    updateBodyDir: function(body)
     {
-        var ang = 0;
-        if(dir == 2) ang = 180;
-        else if(dir == 3) ang = 90;
-        else if(dir == 4) ang = -90;
-        this.tail.angle = ang;
+        var ang = 180;
+        if(this.dir == "left") ang = 0;
+        else if(this.dir == "top") ang = -90;
+        else if(this.dir == "down") ang = 90;
+        body.angle = ang;
     },
 
     update: function(dt) {

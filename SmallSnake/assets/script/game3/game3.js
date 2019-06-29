@@ -349,11 +349,14 @@ cc.Class({
                 var gid2 = this.getTiledGid(p3);
                 if(gid2 == 0)
                 {
-                    var tiled = this.getTiled(p);
-                    tiled.gid = 0;
-                    tiled = this.getTiled(p3);
-                    tiled.gid = config.getTiledId("moveStone");
-                    tiled.node.position = p3.add(cc.v2(-this.tiledSize.width/2,-this.tiledSize.height/2));
+                    if(!this.snake.judgeHaveSnake(p3))
+                    {
+                        var tiled = this.getTiled(p);
+                        tiled.gid = 0;
+                        tiled = this.getTiled(p3);
+                        tiled.gid = config.getTiledId("moveStone");
+                        tiled.node.position = p3.add(cc.v2(-this.tiledSize.width/2,-this.tiledSize.height/2));
+                    }
                 }
             }
             else if(name == "chest")
