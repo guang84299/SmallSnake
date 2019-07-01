@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
+ <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
+  <image source="element.png" width="520" height="40"/>
+ </tileset>
+ <layer name="layer" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJztlN0KgCAMhZUiguz9XzeEAhnnW8vwzgO78Ofbdgaa0tQoHU30cnsnXyBfpCfLr3Cnt36Ep7XiPW9Z1C2Q01OEt/W3O1TfnifiaX62J+Wn7p2iJvE1srlDM/Y80VqdUX47b+JbLR95z98bTzmft/v3D5gapwuCEAS2
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos" x="261.333" y="622.667">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="jiguang" x="341.333" y="258.667">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="jiguang" x="300" y="860">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

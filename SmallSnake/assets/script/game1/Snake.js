@@ -176,7 +176,7 @@ cc.Class({
         return this.game.judgePass(pos);
     },
 
-    judgePassStone: function(dir)
+    judgePassStone: function(dir,isTishi)
     {
         var pos = this.head.position;
         var pos2 = cc.v2(0,this.moveSize.height);
@@ -239,7 +239,7 @@ cc.Class({
             }
 
             //后面都没有  移动石头
-            if(b && index != -1)
+            if(b && index != -1 && !isTishi)
             {
                 var self = this;
 
@@ -569,6 +569,65 @@ cc.Class({
         return false;
     },
 
+    judgeReplay: function()
+    {
+        var b = false;
+
+        var b1 = this.judgePassBody("top");
+        if(b1) b1 = this.judgePassStone("top",true);
+
+        var b2 = this.judgePassBody("bottom");
+        if(b2) b2 = this.judgePassStone("bottom",true);
+
+        var b3 = this.judgePassBody("left");
+        if(b3) b3 = this.judgePassStone("left",true);
+
+        var b4 = this.judgePassBody("right");
+        if(b4) b4 = this.judgePassStone("right",true);
+
+        if(!b1 && !b2 && !b3 && !b4)
+            b = true;
+        var b5 = false;
+        if(!b)
+        {
+            //判断竖着只能向上的情况
+            if(!b3 && !b4)
+            {
+                var min = Math.min(this.moveSize.width,this.moveSize.height)/2;
+                for(var i=0;i<this.bodys.length;i++)
+                {
+                    var dis = Math.abs(this.head.x - this.bodys[i].x);
+                    if(dis>min)
+                    {
+                        b5 = true;
+                        break;
+                    }
+                }
+                if(!b5)
+                {
+                    for(var i=0;i<this.bodys.length;i++)
+                    {
+                        var dis = Math.abs(this.tail.x - this.bodys[i].x);
+                        if(dis>min)
+                        {
+                            b5 = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(!b5)
+                    b = true;
+            }
+        }
+
+
+        if(b)
+        {
+            this.game.playReplayAni();
+        }
+    },
+
     judgeWin: function(pos)
     {
         if(this.judgeTrap())
@@ -587,6 +646,7 @@ cc.Class({
                 this.pass();
                 return true;
             }
+
         }
         return false;
     },
@@ -649,6 +709,10 @@ cc.Class({
                     self.updateDropDir();
                     self.drop();
                 }
+                else
+                {
+                    self.judgeReplay();
+                }
             }
 
             //判断石头掉落
@@ -701,6 +765,11 @@ cc.Class({
                 if(self.judgeTrap())
                 {
                     self.game.willGameOver();
+                }
+                else
+                {
+                    //判断是否提示重玩
+                    self.judgeReplay();
                 }
             }
             //判断石头掉落

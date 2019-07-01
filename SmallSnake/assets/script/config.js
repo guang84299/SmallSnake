@@ -5,8 +5,8 @@
 module.exports = {
 
     levelNum:30,
-    levelNum2:51,
-    levelNum3:11,
+    levelNum2:99,
+    levelNum3:28,
 
     game3TiledIds:[
         {id:0,name:"moveStone",desc:"可移动石块"},

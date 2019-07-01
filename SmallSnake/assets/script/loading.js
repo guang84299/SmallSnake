@@ -60,9 +60,7 @@ cc.Class({
             "prefab/game3/boom",
             "prefab/game3/emitterAni",
 
-            //"prefab/ui/box_car",
-            //
-            //"prefab/ui/node_setting",
+            "prefab/ui/jiesuan",
             //
             //"prefab/particle/suijinbi",
             "scene/game1"
@@ -70,15 +68,15 @@ cc.Class({
 
         for(var i=1;i<=config.levelNum;i++)
         {
-            this.purls.push("prefab/game1/level_"+i);
+            this.purls.push("maps1/level_"+i);
         }
         for(var i=1;i<=config.levelNum2;i++)
         {
-            this.purls.push("prefab/game2/level_"+i);
+            this.purls.push("maps2/level_"+i);
         }
         for(var i=1;i<=config.levelNum3;i++)
         {
-            this.purls.push("prefab/game3/level_"+i);
+            this.purls.push("maps3/level_"+i);
         }
         this.completedCount = 0;
         this.totalCount = this.purls.length;
@@ -181,6 +179,12 @@ cc.Class({
             pifx = "prefab_game2_";
         else if(url.indexOf("prefab/game3/") != -1)
             pifx = "prefab_game3_";
+        else if(url.indexOf("maps1/") != -1)
+            pifx = "game1_";
+        else if(url.indexOf("maps2/") != -1)
+            pifx = "game2_";
+        else if(url.indexOf("maps3/") != -1)
+            pifx = "game3_";
         res[pifx+resource.name] = resource;
     },
 

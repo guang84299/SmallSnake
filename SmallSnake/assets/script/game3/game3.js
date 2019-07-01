@@ -16,7 +16,7 @@ cc.Class({
     },
 
     onLoad: function() {
-        cc.myscene = "game";
+        cc.myscene = "game3";
         this.level = storage.getLevel(3);
         this.initData();
         this.initUI();
@@ -65,7 +65,9 @@ cc.Class({
     {
         this.maps.destroyAllChildren();
         if(this.level>config.levelNum3) this.level = config.levelNum3;
-        this.tmx = cc.instantiate(res["prefab_game3_level_"+this.level]);
+        this.tmx = new cc.Node();
+        var tmx = this.tmx.addComponent(cc.TiledMap);
+        tmx.tmxAsset = res["game3_level_"+this.level];
         this.maps.addChild(this.tmx);
     },
 
@@ -163,13 +165,13 @@ cc.Class({
         this.dir = "";
         this.level+=1;
         storage.setLevel(3,this.level);
+
+        res.openUI("jiesuan");
+    },
+
+    nextLevel: function()
+    {
         this.resetData();
-        //this.node_ui.active = false;
-        //
-        //this.addCoin();
-        //res.openUI("jiesuan",null,"win");
-        //
-        //storage.playSound(res.audio_1st);
     },
 
     willGameOver: function()

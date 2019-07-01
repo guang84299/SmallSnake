@@ -16,7 +16,7 @@ cc.Class({
     },
 
     onLoad: function() {
-        cc.myscene = "game";
+        cc.myscene = "game2";
         this.level = storage.getLevel(2);
         this.initData();
         this.initUI();
@@ -62,7 +62,9 @@ cc.Class({
     {
         this.maps.destroyAllChildren();
         if(this.level>config.levelNum2) this.level = config.levelNum2;
-        this.tmx = cc.instantiate(res["prefab_game2_level_"+this.level]);
+        this.tmx = new cc.Node();
+        var tmx = this.tmx.addComponent(cc.TiledMap);
+        tmx.tmxAsset = res["game2_level_"+this.level];
         this.maps.addChild(this.tmx);
     },
 
@@ -93,6 +95,7 @@ cc.Class({
         this.mapSize = this.tiledMap.getMapSize();
 
         this.roads = [];
+        this.blocks = [];
         this.tipItems = [];
 
         var subp = cc.v2(this.mapSize.width*this.tiledSize.width/2,
@@ -116,6 +119,7 @@ cc.Class({
             block.position = pos.sub(subp);
             block.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
             block.parent = this.maps;
+            this.blocks.push(block);
 
             var tip = cc.instantiate(res["prefab_game2_blockTip"]);
             tip.position = pos.sub(subp);
@@ -152,6 +156,7 @@ cc.Class({
         this.gameDt = 0;
         this.snake.sel = false;
         this.points = [];
+        this.tishiNum = 0;
     },
 
     converToRoadPos: function(pos)
@@ -169,14 +174,14 @@ cc.Class({
         this.level+=1;
         this.snake.sel = false;
         storage.setLevel(2,this.level);
+
+        res.openUI("jiesuan");
+    },
+
+    nextLevel: function()
+    {
         this.initMap();
         this.resetData();
-        //this.node_ui.active = false;
-        //
-        //this.addCoin();
-        //res.openUI("jiesuan",null,"win");
-        //
-        //storage.playSound(res.audio_1st);
     },
 
     willGameOver: function()
@@ -208,23 +213,12 @@ cc.Class({
 
     showTips: function()
     {
-        if(!this.isShowTips)
+        this.tishiNum += 4;
+        for(var i=0;i<this.tipItems.length;i++)
         {
-            this.isShowTips = true;
-
-            for(var i=0;i<this.tipItems.length;i++)
-            {
-                this.tipItems[i].active = true;
-            }
-        }
-        else
-        {
-            this.isShowTips = false;
-
-            for(var i=0;i<this.tipItems.length;i++)
-            {
-                this.tipItems[i].active = false;
-            }
+            if(i>=this.tishiNum)
+                break;
+            this.tipItems[i].active = true;
         }
     },
 
@@ -316,7 +310,7 @@ cc.Class({
                                 this.roads[item2.index].line = false;
                                 item2.lastIndex = item.index;
                                 item2.isMove = true;
-                                this.removePath(item2);
+                                this.removePath(item2,isMove);
                                 this.points.splice(this.points.length-1,1);
                             }
 
@@ -343,7 +337,7 @@ cc.Class({
                             {
                                 this.roads[this.points[j].index].line = false;
                                 this.points[j-1].isMove = false;
-                                this.removePath(this.points[j-1]);
+                                this.removePath(this.points[j-1],isMove);
                             }
                             this.points.splice(num+1,this.points.length-num-1);
                         }
@@ -393,11 +387,39 @@ cc.Class({
 
     addPath: function(item)
     {
+        if(this.points.length>1)
+        {
+            var i = item.index;
+            var block = this.blocks[i-1];
+            block.stopAllActions();
+            block.scale = 1;
+            block.runAction(cc.scaleTo(0.1,0.8).easing(cc.easeSineIn()));
+        }
         this.snake.playAni(item,true);
     },
 
-    removePath: function(item)
+    removePath: function(item,isMove)
     {
+        if(this.points.length>1)
+        {
+            if(isMove)
+            {
+                var i = item.index;
+                var block = this.blocks[i-1];
+                block.stopAllActions();
+                block.scale = 0.8;
+                block.runAction(cc.scaleTo(0.1,1).easing(cc.easeSineIn()));
+            }
+            else
+            {
+                for(var i=0;i<this.blocks.length;i++)
+                {
+                    this.blocks[i].stopAllActions();
+                    this.blocks[i].scale = 1;
+                }
+            }
+
+        }
         this.snake.playAni(item,false);
     },
 

@@ -219,7 +219,7 @@ module.exports = {
                 return;
             }
         }
-        cc.loader.loadRes("prefab/ui/node_"+name, function(err, prefab)
+        cc.loader.loadRes("prefab/ui/"+name, function(err, prefab)
         {
             if(err)
             {

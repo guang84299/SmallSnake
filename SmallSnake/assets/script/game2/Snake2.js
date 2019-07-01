@@ -33,7 +33,10 @@ cc.Class({
         this.body.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
         this.tail.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
 
+        cc.find("head/di",this.node).setContentSize(this.head.getContentSize());
+        cc.find("tail/di",this.node).setContentSize(this.tail.getContentSize());
 
+        //this.node.scale = this.tiledSize.width/116;
         if(this.bodys && this.bodys.length>0)
         {
             for(var i=0;i<this.bodys.length;i++)
@@ -80,7 +83,7 @@ cc.Class({
         var node2 = cc.res.playAnim("images/game2/tail",20,0.08,-1,null,true);
         node2.y = this.tiledSize.height*0.8;
         this.tailAni.addChild(node2);
-
+        node2.scale = this.tiledSize.width/116;
         this.playIdleAni();
     },
 
@@ -90,6 +93,7 @@ cc.Class({
         this.headAni.destroyAllChildren();
         var node = cc.res.playAnim("images/game2/idle",30,0.08,-1,null,true);
         this.headAni.addChild(node);
+        node.scale = this.tiledSize.width/116;
     },
 
     playRunAni: function()
@@ -103,6 +107,7 @@ cc.Class({
                 self.playIdleAni();
             },true);
             this.headAni.addChild(node);
+            node.scale = this.tiledSize.width/116;
         }
     },
 
@@ -144,6 +149,7 @@ cc.Class({
             this.lastItemPos = pos;
             this.lastItemIndex = item.index;
             this.lastItemAdd = isAdd;
+
         }
         else
         {
@@ -228,8 +234,8 @@ cc.Class({
 
                 if(p1.x != p2.x)
                 {
-                    body.setContentSize(cc.size(this.tiledSize.width * 1.1, this.tiledSize.height * 0.9));
-                    var dis = this.tiledSize.width*0.1;
+                    body.setContentSize(cc.size(this.tiledSize.width * 1.2, this.tiledSize.height * 0.9));
+                    var dis = this.tiledSize.width*0.15;
                     if(p1.x < p2.x)
                         dis = -dis;
                     if(isTail) dis *= 2;
@@ -237,8 +243,8 @@ cc.Class({
                 }
                 else
                 {
-                    body.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*1.1));
-                    var dis = this.tiledSize.height*0.1;
+                    body.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*1.2));
+                    var dis = this.tiledSize.height*0.15;
                     if(p1.y < p2.y)
                         dis = -dis;
                     if(isTail) dis *= 2;

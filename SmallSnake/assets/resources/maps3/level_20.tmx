@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
+ <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
+  <image source="element.png" width="520" height="40"/>
+ </tileset>
+ <layer name="layer" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJztkbEOgDAIRNGhQxv//3d1aXJqgYOauPSSl3R5QEFkZSbtA8rFnuDplwCaH5k309/yPTS/EX09n/nvyO/x5mB8bw+sb+2e9dn7Wz7upQJRv8o7GX+DebT7HfC2+ovcfawxqqux8m9ObF8G3Q==
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos" x="578.667" y="820">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

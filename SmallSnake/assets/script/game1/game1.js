@@ -16,7 +16,7 @@ cc.Class({
     },
 
     onLoad: function() {
-        cc.myscene = "game";
+        cc.myscene = "game1";
         this.level = storage.getLevel(1);
         this.initData();
         this.initUI();
@@ -37,6 +37,7 @@ cc.Class({
         this.node_ui = cc.find("Canvas/node_ui");
         this.node_level = cc.find("level/num",this.node_ui).getComponent(cc.Label);
         this.maps = cc.find("maps",this.node_game);
+        this.btn_replay = cc.find("replay",this.node_ui);
         this.initMap();
         //if(cc.sdk.is_iphonex())
         //{
@@ -61,7 +62,9 @@ cc.Class({
     {
         this.maps.destroyAllChildren();
         if(this.level>config.levelNum) this.level = config.levelNum;
-        this.tmx = cc.instantiate(res["prefab_game1_level_"+this.level]);
+        this.tmx = new cc.Node();
+        var tmx = this.tmx.addComponent(cc.TiledMap);
+        tmx.tmxAsset = res["game1_level_"+this.level];
         this.maps.addChild(this.tmx);
     },
 
@@ -105,9 +108,9 @@ cc.Class({
 
         var subp = cc.v2(640/2,1136/2);
 
-        var pos1 = cc.v2(obj1.x,obj1.y).sub(subp);
-        var pos2 = cc.v2(obj2.x,obj2.y).sub(subp);
-        var pos3 = cc.v2(obj3.x,obj3.y).sub(subp);
+        var pos1 = this.converToRoadPos(cc.v2(obj1.x,obj1.y)).sub(subp);
+        var pos2 = this.converToRoadPos(cc.v2(obj2.x,obj2.y)).sub(subp);
+        var pos3 = this.converToRoadPos(cc.v2(obj3.x,obj3.y)).sub(subp);
 
         this.exit.position = cc.v2(exit.x,exit.y).sub(subp);
         exit_left.position = this.exit.position;
@@ -170,6 +173,12 @@ cc.Class({
         this.snake.initPos(pos1,pos2,pos3);
     },
 
+    converToRoadPos: function(pos)
+    {
+        return cc.v2((Math.floor(pos.x/this.tiledSize.width)+0.5)*this.tiledSize.width,
+            (Math.floor(pos.y/this.tiledSize.height)+0.5)*this.tiledSize.height);
+    },
+
     startGame: function()
     {
         storage.stopMusic();
@@ -180,6 +189,7 @@ cc.Class({
         this.currLevel = 0;
 
         this.gameDt = 0;
+        this.btn_replay.stopAllActions();
     },
 
     judgePass: function(pos)
@@ -220,14 +230,17 @@ cc.Class({
         this.state = "stop";
         this.level+=1;
         storage.setLevel(1,this.level);
+
+
+        res.openUI("jiesuan");
+
+        //storage.playSound(res.audio_1st);
+    },
+
+    nextLevel: function()
+    {
         this.initMap();
         this.resetData();
-        //this.node_ui.active = false;
-        //
-        //this.addCoin();
-        //res.openUI("jiesuan",null,"win");
-        //
-        //storage.playSound(res.audio_1st);
     },
 
     willGameOver: function()
@@ -255,6 +268,19 @@ cc.Class({
 
 
         //storage.playMusic(res.audio_bgm);
+    },
+
+    playReplayAni: function()
+    {
+        if(this.btn_replay.getActionByTag(1))
+            return;
+        var ac = cc.repeatForever(cc.sequence(
+            cc.scaleTo(0.2,1.3).easing(cc.easeSineIn()),
+            cc.scaleTo(0.2,1).easing(cc.easeSineIn()),
+            cc.delayTime(0.2)
+        ));
+        ac.setTag(1);
+        this.btn_replay.runAction(ac);
     },
 
 

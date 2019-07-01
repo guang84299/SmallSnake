@@ -5,26 +5,14 @@
  </tileset>
  <layer name="layer" width="16" height="28">
   <data encoding="base64" compression="zlib">
-   eJztlN0KgCAMhZUiguz9XzeEAhnnW8vwzgO78Ofbdgaa0tQoHU30cnsnXyBfpCfLr3Cnt36Ep7XiPW9Z1C2Q01OEt/W3O1TfnifiaX62J+Wn7p2iJvE1srlDM/Y80VqdUX47b+JbLR95z98bTzmft/v3D5gapwuCEAS2
+   eJztk8EKwCAMQ2WHeaj7/9913qSkNtnYTj4Iw0IWUrGUzRfYpKf+S/AbUA3m6J9oVhc5aN5unZMOd878DCs/253JR92z/EHUfagJ+RFs/2wPbL7fg3L/fg+Zn0HpH82ZLHNflbfvf/MPHbfZBEk=
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos" x="261.333" y="622.667">
+  <object name="startPos" x="301.333" y="821.333">
    <properties>
     <property name="dir" value="up"/>
    </properties>
-  </object>
-  <object name="jiguang" x="341.333" y="258.667">
-   <properties>
-    <property name="dir" value="down"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object name="jiguang" x="300" y="860">
-   <properties>
-    <property name="dir" value="up"/>
-   </properties>
-   <ellipse/>
   </object>
  </objectgroup>
 </map>

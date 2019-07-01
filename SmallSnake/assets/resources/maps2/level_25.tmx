@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="7" height="12" tilewidth="95" tileheight="95">
- <objectgroup name="tipslayer">
+ <objectgroup name="tipsLayer">
   <object name="1" x="138" y="418">
    <properties>
     <property name="dir" value="up"/>
