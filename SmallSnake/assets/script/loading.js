@@ -55,6 +55,7 @@ cc.Class({
             "prefab/game1/trap",
 
             "prefab/game2/block",
+            "prefab/game2/blockTip",
 
             "prefab/game3/boom",
             "prefab/game3/emitterAni",

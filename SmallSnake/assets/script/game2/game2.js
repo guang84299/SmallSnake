@@ -114,19 +114,18 @@ cc.Class({
 
             var block = cc.instantiate(res["prefab_game2_block"]);
             block.position = pos.sub(subp);
-            block.setContentSize(this.tiledSize);
+            block.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
             block.parent = this.maps;
 
-            var tip = cc.instantiate(res["prefab_game2_block"]);
+            var tip = cc.instantiate(res["prefab_game2_blockTip"]);
             tip.position = pos.sub(subp);
-            tip.setContentSize(this.tiledSize);
+            tip.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
             tip.parent = this.maps;
-            tip.scale = 0.8;
             var ang = 0;
-            if(obj.dir == "up") ang = 0;
+            if(obj.dir == "up") ang = 180;
             else if(obj.dir == "down") ang = 0;
-            else if(obj.dir == "left") ang = 0;
-            else if(obj.dir == "right") ang = 0;
+            else if(obj.dir == "left") ang = -90;
+            else if(obj.dir == "right") ang = 90;
             tip.angle = ang;
             tip.active = false;
             this.tipItems.push(tip);
@@ -151,7 +150,6 @@ cc.Class({
         this.currLevel = 0;
 
         this.gameDt = 0;
-        this.lastPoint = null;
         this.snake.sel = false;
         this.points = [];
     },
@@ -169,7 +167,6 @@ cc.Class({
 
         this.state = "stop";
         this.level+=1;
-        this.lastPoint = null;
         this.snake.sel = false;
         storage.setLevel(2,this.level);
         this.initMap();
@@ -231,6 +228,11 @@ cc.Class({
         }
     },
 
+    updateDir: function()
+    {
+
+    },
+
     judgeWin: function()
     {
         var b = true;
@@ -240,50 +242,55 @@ cc.Class({
             {
                 b = false;
             }
-            if(j == this.lastIndex)
-                this.snake.updateBody(j,!this.roads[j].line);
-            else
-                this.snake.updateBody(j,this.roads[j].line);
+
+            //if(j == this.lastIndex)
+            //    this.snake.updateBody(j,!this.roads[j].line);
+            //else
+            //    this.snake.updateBody(j,this.roads[j].line);
         }
-        if(this.points.length>0)
+        if(this.points.length>1)
         {
-            var p = this.points[this.points.length-1];
+            var p = this.points[this.points.length-1].pos;
+            var p2 = this.points[this.points.length-2].pos;
             var dir = 0;
-            if(p.x<this.lastPoint.x)
+            if(p.x<p2.x)
                 dir = 1;
-            else if(p.x>this.lastPoint.x)
+            else if(p.x>p2.x)
                 dir = 2;
-            if(p.y<this.lastPoint.y)
+            if(p.y<p2.y)
                 dir = 3;
-            else if(p.y>this.lastPoint.y)
+            else if(p.y>p2.y)
                 dir = 4;
             this.snake.updateHeadDir(dir);
         }
         else
-        this.snake.updateHeadDir(this.lastDir);
-        if(this.points.length == 1)
+        this.snake.updateHeadDir(3);
+        if(this.points.length > 1)
         {
-            var p = this.points[0];
+            var p = this.points[0].pos;
+            var p2 = this.points[1].pos;
             var dir = 0;
-            if(p.x<this.lastPoint.x)
+            if(p.x<p2.x)
                 dir = 1;
-            else if(p.x>this.lastPoint.x)
+            else if(p.x>p2.x)
                 dir = 2;
-            if(p.y<this.lastPoint.y)
+            if(p.y<p2.y)
                 dir = 3;
-            else if(p.y>this.lastPoint.y)
+            else if(p.y>p2.y)
                 dir = 4;
             this.snake.updateTailDir(dir);
         }
+        else
+            this.snake.updateTailDir(4);
         if(b) this.gameWin();
     },
 
-    judgePos: function(pos)
+    judgePos: function(pos,isMove)
     {
         var subp = cc.v2(this.mapSize.width*this.tiledSize.width/2,
             this.mapSize.height*this.tiledSize.height/2);
-        var p1 = pos.add(subp);
         var w = this.tiledSize.width/2;
+        var p1 = pos.add(subp);
         var min = Math.min(this.tiledSize.width,this.tiledSize.height)/2;
         for(var i=0;i<this.roads.length;i++)
         {
@@ -293,130 +300,108 @@ cc.Class({
 
             if(dis<min)
             {
-                if(!this.lastPoint)
+                //如果当前格子选中
+                if(r.line)
                 {
-                    this.lastPoint = p2;
-                    this.lastIndex = i;
-                    this.lastDir = 0;
-                    this.firstIndex = i;
-                    r.line = true;
-                    if(p2.x>this.lastPoint.x)
-                        this.lastDir = 1;
-                    else if(p2.x<this.lastPoint.x)
-                        this.lastDir = 2;
-                    if(p2.y>this.lastPoint.y)
-                        this.lastDir = 3;
-                    else if(p2.y<this.lastPoint.y)
-                        this.lastDir = 4;
-                }
-                else
-                {
-                    //不允许斜边
-                    if(p2.x!=this.lastPoint.x && p2.y!=this.lastPoint.y)
-                        return this.snake.head.position;
-                    //不允许跨格
-                    if(this.lastPoint.sub(p2).mag()>w*2)
-                        return this.snake.head.position;
-                    //过滤相同点
-                    if(p2.x==this.lastPoint.x && p2.y==this.lastPoint.y)
-                        return this.snake.head.position;
-
-                    var r2 = this.roads[this.lastIndex];
-                    //不允许回退除了上个节点外的节点
-                    if(r.line && this.points.length>0)
+                    //if(!isRemove) return;
+                    if(isMove)
                     {
-                        var lp = this.points[this.points.length-1];
-                        if(p2.x == lp.x && p2.y == lp.y)
+                        if(this.points.length>1)
                         {
-                            this.points.splice(this.points.length-1,1);
+                            var item = this.points[this.points.length-2];
+                            var dis = item.pos.sub(p2).mag();
+                            if(dis<min)
+                            {
+                                var item2 = this.points[this.points.length-1];
+                                this.roads[item2.index].line = false;
+                                item2.lastIndex = item.index;
+                                item2.isMove = true;
+                                this.removePath(item2);
+                                this.points.splice(this.points.length-1,1);
+                            }
+
                         }
-                        else
-                        {
-                            return this.snake.head.position;
-                        }
+
                     }
                     else
                     {
-                        if(this.points.length>0)
+                        var num = -1;
+                        for(var j=0;j<this.points.length;j++)
                         {
-                            var lp = this.points[this.points.length-1];
-                            if(p2.x!=lp.x || p2.y!=lp.y)
+                            var item = this.points[j];
+                            var dis = item.pos.sub(p2).mag();
+                            if(dis<min)
                             {
-                                r2.line = true;
-                                this.lastDir = 0;
+                                num = j;
+                                break;
                             }
                         }
-                        else
+                        //判断不是最后一格 就删除
+                        if(num != -1)
                         {
-                            this.lastDir = 0;
-                            r2.line = true;
+                            for(var j=this.points.length-1;j>num;j--)
+                            {
+                                this.roads[this.points[j].index].line = false;
+                                this.points[j-1].isMove = false;
+                                this.removePath(this.points[j-1]);
+                            }
+                            this.points.splice(num+1,this.points.length-num-1);
                         }
-
-                        //cc.log(this.points,p2);
-                        this.points.push(this.lastPoint);
                     }
-
-                    //右
-                    if(p2.x>this.lastPoint.x)
-                    {
-                        if(this.lastDir == 3 || this.lastDir == 4)
-                        {
-                            this.lastDir = 0;
-                            if(!r.line) r2.line = true;
-                        }
-                        r.line = (this.lastDir == 0 || this.lastDir == 1) ? r2.line : !r2.line;
-                        this.lastDir = 1;
-                    }
-                    else if(p2.x<this.lastPoint.x)
-                    {
-                        if(this.lastDir == 3 || this.lastDir == 4)
-                        {
-                            this.lastDir = 0;
-                            if(!r.line) r2.line = true;
-                        }
-                        r.line = (this.lastDir == 0 || this.lastDir == 2) ? r2.line : !r2.line;
-                        this.lastDir = 2;
-                    }
-
-                    //上
-                    if(p2.y>this.lastPoint.y)
-                    {
-                        if(this.lastDir == 1 || this.lastDir == 2)
-                        {
-                            this.lastDir = 0;
-                            if(!r.line) r2.line = true;
-                        }
-                        r.line = (this.lastDir == 0 || this.lastDir == 3) ? r2.line : !r2.line;
-                        this.lastDir = 3;
-                    }
-                    else if(p2.y<this.lastPoint.y)
-                    {
-                        if(this.lastDir == 1 || this.lastDir == 2)
-                        {
-                            this.lastDir = 0;
-                            if(!r.line) r2.line = true;
-                        }
-                        r.line = (this.lastDir == 0 || this.lastDir == 4) ? r2.line : !r2.line;
-                        this.lastDir = 4;
-                    }
-                    //cc.log(r.line,r2.line);
-                    if(r.line != r2.line)
-                    {
-                        r2.line = !r2.line;
-                    }
-
-                    this.lastPoint = p2;
-                    this.lastIndex = i;
-
-                    if(i == this.firstIndex) r.line = true;
                 }
-                pos = p2.sub(subp);
+                else
+                {
+                    //如果还没选择，直接加入列表
+                    if(this.points.length==0)
+                    {
+                        //判断是否为开始点附近的格子
+                        var lastPos = cc.v2(this.roads[0].x,this.roads[0].y);
+                        var dis = lastPos.sub(p2).mag();
+                        if(dis<=min*2)
+                        {
+                            this.roads[0].line = true;
 
-                return pos;
+                            var item = {pos:lastPos,index:0};
+                            this.points.push(item);
+                            this.addPath(item);
+
+                        }
+                    }
+                    //判断是否是相邻的格子
+                    if(this.points.length>0)
+                    {
+                        var lastItem = this.points[this.points.length-1];
+                        var lastPos = lastItem.pos;
+                        var dis = lastPos.sub(p2).mag();
+                        if(dis<=min*2 && dis > min)
+                        {
+                            r.line = true;
+
+                            var item = {pos:p2,index:i};
+                            this.points.push(item);
+                            this.addPath(item);
+
+                        }
+                    }
+
+                }
+
+                this.lastPoint = p2;
             }
         }
-        return this.snake.head.position;
     },
+
+    addPath: function(item)
+    {
+        this.snake.playAni(item,true);
+    },
+
+    removePath: function(item)
+    {
+        this.snake.playAni(item,false);
+    },
+
+
 
     touchStart: function(event)
     {
@@ -429,10 +414,13 @@ cc.Class({
             var dis = p.sub(this.snake.head.position).mag();
             if(dis<this.tiledSize.width/2)
             {
-                p = this.judgePos(p,p);
-                this.snake.head.position = p;
+                this.judgePos(p);
                 this.snake.sel = true;
-                this.judgeWin();
+            }
+            else
+            {
+                this.judgePos(p);
+                this.snake.sel = true;
             }
         }
     },
@@ -445,10 +433,7 @@ cc.Class({
                 var pos = event.getLocation();
                 //var prp = event.getPreviousLocation();
                 var p = pos.sub(cc.v2(cc.winSize.width/2,cc.winSize.height/2));
-                p = this.judgePos(p);
-                this.snake.head.position = p;
-                if(this.lastPoint.x != p.x || this.lastPoint.y != p.y)
-                    this.judgeWin();
+                this.judgePos(p,true);
             }
         }
     },

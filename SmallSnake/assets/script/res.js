@@ -90,7 +90,7 @@ module.exports = {
 
     playAnim: function(path,frameNum,time,loop,callback,isRemove,isFlip)
     {
-        if(loop == -1) loop = 999999;
+        if(loop == -1) loop = 999999999;
 
         var node = new cc.Node();
         var sp = node.addComponent(cc.Sprite);
