@@ -21,6 +21,7 @@ cc.Class({
         this.initData();
         this.initUI();
         this.yindao = storage.getYinDao();
+
     },
 
 
@@ -141,7 +142,7 @@ cc.Class({
             if(obj.name == "apple")
             {
                 var apple = cc.instantiate(res["prefab_game1_apple"]);
-                apple.position = cc.v2(obj.x,obj.y).sub(subp);
+                apple.position = this.converToRoadPos(cc.v2(obj.x,obj.y)).sub(subp);
                 this.node_game.addChild(apple);
 
                 this.apples.push(apple);
@@ -149,7 +150,7 @@ cc.Class({
             else if(obj.name == "stone")
             {
                 var stone = cc.instantiate(res["prefab_game1_stone"]);
-                stone.position = cc.v2(obj.x,obj.y).sub(subp);
+                stone.position = this.converToRoadPos(cc.v2(obj.x,obj.y)).sub(subp);
                 this.node_game.addChild(stone);
 
                 this.stones.push(stone);
@@ -157,7 +158,7 @@ cc.Class({
             else if(obj.name == "trap")
             {
                 var trap = cc.instantiate(res["prefab_game1_trap"]);
-                trap.position = cc.v2(obj.x,obj.y).sub(subp);
+                trap.position = this.converToRoadPos(cc.v2(obj.x,obj.y)).sub(subp);
                 this.node_game.addChild(trap);
 
                 if(obj.dir == "down")
@@ -190,6 +191,8 @@ cc.Class({
 
         this.gameDt = 0;
         this.btn_replay.stopAllActions();
+
+        cc.qianqista.event("蛇求生关卡_"+this.level);
     },
 
     judgePass: function(pos)
@@ -227,12 +230,15 @@ cc.Class({
         if(this.state == "stop")
             return;
 
+        cc.qianqista.event("蛇求生胜利关卡_"+this.level);
+
         this.state = "stop";
         this.level+=1;
         storage.setLevel(1,this.level);
 
 
         res.openUI("jiesuan");
+
 
         //storage.playSound(res.audio_1st);
     },
@@ -247,6 +253,7 @@ cc.Class({
     {
         this.state = "stop";
 
+        cc.qianqista.event("蛇求生失败关卡_"+this.level);
         this.resetData();
         //this.node_ui.active = false;
         //this.addCoin();

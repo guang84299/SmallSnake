@@ -30,6 +30,7 @@ cc.Class({
         this.tail = cc.find("tail",this.node);
         this.body = cc.find("body",this.node);
 
+
         if(this.bodys && this.bodys.length>0)
         {
             for(var i=0;i<this.bodys.length;i++)
@@ -57,7 +58,6 @@ cc.Class({
         this.body.ldir = "right";
         this.tail.ldir = "right";
 
-
         this.head.position = pos1;
         this.body.position = pos2;
         this.tail.position = pos3;
@@ -65,6 +65,9 @@ cc.Class({
         this.head.opacity = 255;
         this.body.opacity = 255;
         this.tail.opacity = 255;
+
+        //this.body.scale = 1;
+        //this.tail.scale = 1;
 
         var min = Math.min(this.moveSize.width,this.moveSize.height)/2;
 
@@ -643,7 +646,10 @@ cc.Class({
             {
                 this.isMoving = true;
                 this.head.opacity = 0;
-                this.pass();
+                this.scheduleOnce(function(){
+                    this.pass();
+                },0.2);
+
                 return true;
             }
 
@@ -725,6 +731,7 @@ cc.Class({
         },mTime*2);
 
 
+        cc.sdk.vibrate();
     },
 
     drop: function()
@@ -804,18 +811,12 @@ cc.Class({
                         cc.fadeOut(mTime)
                     ),
                     cc.callFunc(function(){
-
                         if(self.bodys.length>0)
                         {
-                            self.updateDir(self.bodys[0].ldir);
                             if(self.bodys[0] != self.body)
                             {
                                 self.bodys[0].destroy();
                             }
-
-                            self.bodys.splice(0,1);
-
-                            self.pass();
                         }
 
                     })
@@ -823,10 +824,18 @@ cc.Class({
             }
             this.bodys[i].runAction(ac2);
         }
+
         if(this.bodys.length>0)
         {
+            self.updateDir(self.bodys[0].dir);
             var ac3 = cc.moveTo(mTime,this.bodys[this.bodys.length-1].position);
-            this.tail.runAction(ac3);
+            self.bodys.splice(0,1);
+            this.tail.runAction(cc.sequence(
+                ac3,
+                cc.callFunc(function(){
+                    self.pass();
+                })
+            ));
         }
         else
         {

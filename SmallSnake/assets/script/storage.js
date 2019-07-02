@@ -181,7 +181,7 @@ module.exports = {
     uploadLevel: function(type)
     {
         var datas = {};
-        datas.level = this.getLevel(type);
+        datas["level_"+type] = this.getLevel(type);
         var data = JSON.stringify(datas);
         cc.qianqista.uploaddatas(data);
     },

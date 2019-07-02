@@ -49,7 +49,7 @@ cc.Class({
         this.body.angle = 0;
         this.isMing = false;
         this.dir = "";
-        this.speed = 0.2;
+        this.speed = 0.15;
         this.boomSpeed = 0.3;
         this.isCanBoom = false;
         this.isFirstBoom = true;
@@ -135,7 +135,7 @@ cc.Class({
     {
         if(this.bodys.length>1)
         {
-            var min = cc.v2(this.tiledSize.width,this.tiledSize.height).mag();
+            var min = Math.min(this.tiledSize.width,this.tiledSize.height);
             var body = this.bodys[this.bodys.length-1];
             //身体和头
             var dis = this.head.position.sub(body.position).mag();
@@ -282,6 +282,8 @@ cc.Class({
 
             this.isCanBoom = false;
         }
+
+        cc.storage.playSound(cc.res.audio_baozha);
     },
 
     boomBody: function(bodys)
@@ -294,6 +296,7 @@ cc.Class({
             boom.position = body.position;
             boom.parent = this.node;
 
+            this.game.tailBoom(body.position);
 
             bodys.splice(0,1);
             body.destroy();
@@ -305,6 +308,8 @@ cc.Class({
                 var boom = cc.res.playAnim("images/game3/tailboom",16,0.05,1,null,true);
                 boom.position = body.position;
                 boom.parent = this.node;
+
+                this.game.tailBoom(body.position);
 
                 bodys.splice(bodys.length-1,1);
 

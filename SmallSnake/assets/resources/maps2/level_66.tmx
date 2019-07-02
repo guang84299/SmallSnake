@@ -151,9 +151,6 @@
    </properties>
    <ellipse/>
   </object>
-  <object x="1124" y="166">
-   <ellipse/>
-  </object>
  </objectgroup>
  <objectgroup name="objLayer">
   <object name="startPos" x="128" y="384"/>

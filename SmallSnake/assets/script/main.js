@@ -19,12 +19,14 @@ cc.Class({
         cc.ginvitelist = [];
         cc.myscene = "main";
 
-        storage.playMusic(res.audio_bgm);
+        storage.playMusic(res.audio_music);
 
         this.initData();
 
         this.initUI();
         this.updateUI();
+
+        sdk.showClub();
     },
 
 
@@ -33,7 +35,9 @@ cc.Class({
         var datas = {};
         datas.first = storage.getFirst();
         datas.coin = storage.getCoin();
-        datas.level = storage.getLevel();
+        datas.level_1 = storage.getLevel(1);
+        datas.level_2 = storage.getLevel(2);
+        datas.level_3 = storage.getLevel(3);
         datas.login_time = storage.getLoginTime();
         datas.login_day = storage.getLoginDay();
         datas.game_num = storage.getGameNum();
@@ -95,6 +99,7 @@ cc.Class({
 
         }
 
+        this.share_btn.active = cc.GAME.share;
     },
 
 
@@ -137,7 +142,12 @@ cc.Class({
         this.node_main = cc.find("node_main",this.node);
         this.node_display = cc.find("display",this.node);
 
+        this.share_btn = cc.find("share",this.node_main);
+        this.share_btn.active = false;
 
+        this.game1_num = cc.find("game1/num",this.node_main).getComponent(cc.Label);
+        this.game2_num = cc.find("game2/num",this.node_main).getComponent(cc.Label);
+        this.game3_num = cc.find("game3/num",this.node_main).getComponent(cc.Label);
         //if(sdk.is_iphonex())
         //{
         //    var topNode = cc.find("top",this.node_main);
@@ -153,12 +163,15 @@ cc.Class({
         //    ));
         //}
 
-
+        this.updateUIControl();
     },
 
     updateUI: function()
     {
         //this.node_coin.string = storage.castNum(storage.getCoin());
+        this.game1_num.string = "累计过关："+(storage.getLevel(1)-1);
+        this.game2_num.string = "累计过关："+(storage.getLevel(2)-1);
+        this.game3_num.string = "累计过关："+(storage.getLevel(3)-1);
     },
 
 
@@ -168,14 +181,17 @@ cc.Class({
         var self = this;
         if(data == "game1")
         {
+            sdk.hideClub();
             cc.director.loadScene("game1");
         }
         else if(data == "game2")
         {
+            sdk.hideClub();
             cc.director.loadScene("game2");
         }
         else if(data == "game3")
         {
+            sdk.hideClub();
             cc.director.loadScene("game3");
         }
         else if(data == "setting")

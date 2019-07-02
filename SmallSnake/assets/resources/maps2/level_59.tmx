@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="8" height="14" tilewidth="85" tileheight="85">
- <objectgroup name="对象层 1">
+ <objectgroup name="tipsLayer">
   <object name="1" x="554" y="648">
    <properties>
     <property name="dir" value="down"/>
@@ -152,7 +152,7 @@
    <ellipse/>
   </object>
  </objectgroup>
- <objectgroup name="对象层 2">
+ <objectgroup name="objLayer">
   <object name="startPos" x="560" y="560"/>
  </objectgroup>
 </map>

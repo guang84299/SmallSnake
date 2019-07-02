@@ -21,6 +21,8 @@ cc.Class({
         this.gameIndex = 1;
         if(cc.myscene == "game2") this.gameIndex = 2;
         else if(cc.myscene == "game3") this.gameIndex = 3;
+
+        storage.uploadLevel(this.gameIndex);
     },
 
     updateUI: function()
@@ -49,6 +51,8 @@ cc.Class({
                 cc.scaleTo(0.2,1).easing(cc.easeSineOut())
             ));
         cc.sdk.showBanner();
+
+        storage.playSound(res.audio_win);
     },
 
     hide: function()

@@ -92,7 +92,7 @@ cc.Class({
             sdk.uploadScore(score,self.initNet.bind(self));
         });
         sdk.getUserInfo();
-        sdk.videoLoad();
+        //sdk.videoLoad();
         sdk.closeRank();
 
 
@@ -236,8 +236,12 @@ cc.Class({
                 storage.setFirst(1);
             if(datas.hasOwnProperty("coin"))
                 storage.setCoin(Number(datas.coin));
-            if(datas.hasOwnProperty("level"))
-                storage.setLevel(Number(datas.level));
+            if(datas.hasOwnProperty("level_1"))
+                storage.setLevel(1,Number(datas.level_1));
+            if(datas.hasOwnProperty("level_2"))
+                storage.setLevel(2,Number(datas.level_2));
+            if(datas.hasOwnProperty("level_3"))
+                storage.setLevel(3,Number(datas.level_3));
 
 
             if(datas.hasOwnProperty("login_time"))
@@ -288,7 +292,9 @@ cc.Class({
         var datas = {};
         datas.first = storage.getFirst();
         datas.coin = storage.getCoin();
-        datas.level = storage.getLevel();
+        datas.level_1 = storage.getLevel(1);
+        datas.level_2 = storage.getLevel(2);
+        datas.level_3 = storage.getLevel(3);
         datas.login_time = storage.getLoginTime();
         datas.login_day = storage.getLoginDay();
         datas.game_num = storage.getGameNum();

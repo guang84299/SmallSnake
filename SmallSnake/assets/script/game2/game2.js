@@ -157,6 +157,8 @@ cc.Class({
         this.snake.sel = false;
         this.points = [];
         this.tishiNum = 0;
+
+        cc.qianqista.event("画蛇关卡_"+this.level);
     },
 
     converToRoadPos: function(pos)
@@ -169,6 +171,8 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
+
+        cc.qianqista.event("画蛇胜利关卡_"+this.level);
 
         this.state = "stop";
         this.level+=1;
@@ -187,7 +191,7 @@ cc.Class({
     willGameOver: function()
     {
         this.state = "stop";
-
+        cc.qianqista.event("画蛇失败关卡_"+this.level);
         this.resetData();
         //this.node_ui.active = false;
         //this.addCoin();

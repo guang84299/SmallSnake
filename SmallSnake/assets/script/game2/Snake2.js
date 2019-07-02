@@ -141,6 +141,7 @@ cc.Class({
                     self.updateBodyDir(item.index,isAdd,2);
                     self.isPlayAni = false;
                     self.game.judgeWin();
+                    cc.sdk.vibrate();
                     //if(callback) callback();
                     //cc.log(item.index,isAdd);
                 })

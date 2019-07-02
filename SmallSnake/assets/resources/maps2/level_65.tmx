@@ -175,9 +175,6 @@
    </properties>
    <ellipse/>
   </object>
-  <object x="1410" y="392">
-   <ellipse/>
-  </object>
  </objectgroup>
  <objectgroup name="objLayer">
   <object name="startPos" x="214" y="466"/>

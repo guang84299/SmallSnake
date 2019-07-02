@@ -260,8 +260,8 @@ module.exports = {
         if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
         {
             var query = "fromid="+cc.qianqista.openid+"&channel="+channel;
-            var title = "这才是漂移的正确打开方式！";
-            var imageUrl = "https://game.7q7q.top/img/wxgame/922a983642054e27813d8cb68740150a.jpg";//cc.url.raw("resources/zhuanfa.jpg");
+            var title = "我家的蛇动了凡心，让您贱笑了！";
+            var imageUrl = "https://game.7q7q.top/img/wxgame/2307c4c4fb1945dfa51e9ba7d2adb2f6.jpg";//cc.url.raw("resources/zhuanfa.jpg");
             if(cc.GAME.shares.length>0)
             {
                 var i = Math.floor(Math.random()*cc.GAME.shares.length);
@@ -379,8 +379,8 @@ module.exports = {
                 return {
                     query:"channel=sharemenu",
                     withShareTicket: true,
-                    title: "这才是漂移的正确打开方式！",
-                    imageUrl: "https://game.7q7q.top/img/wxgame/922a983642054e27813d8cb68740150a.jpg"
+                    title: "我家的蛇动了凡心，让您贱笑了！",
+                    imageUrl: "https://game.7q7q.top/img/wxgame/2307c4c4fb1945dfa51e9ba7d2adb2f6.jpg"
                 }
             });
 
@@ -460,6 +460,39 @@ module.exports = {
                 button.destroy();
             });
         }
+    },
+
+    showClub: function()
+    {
+        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        {
+            if(!this.clubBtn)
+            {
+                var s = cc.view.getFrameSize();
+                //var dpi = cc.winSize.width/s.width;
+
+                this.clubBtn = wx.createGameClubButton({
+                    icon: 'green',
+                    style: {
+                        left: s.width*0.03,
+                        top: s.height*0.03,
+                        width: 40,
+                        height: 40
+                    }
+                });
+            }
+            else
+            {
+                this.clubBtn.show();
+            }
+
+        }
+    },
+
+    hideClub: function()
+    {
+        if(this.clubBtn)
+            this.clubBtn.hide()
     },
 
     getNicks: function()

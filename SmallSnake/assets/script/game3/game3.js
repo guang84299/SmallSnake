@@ -40,7 +40,15 @@ cc.Class({
         this.maps = cc.find("maps",this.node_game);
         this.rocker = cc.find("rocker",this.node_ui);
         this.rocker_ball = cc.find("ball",this.rocker);
-        this.rocker.active = false;
+        //this.rocker.active = false;
+
+        this.virkey = cc.find("virkey",this.node_ui);
+        this.virkey_up = cc.find("top",this.virkey);
+        this.virkey_down = cc.find("down",this.virkey);
+        this.virkey_left = cc.find("left",this.virkey);
+        this.virkey_right = cc.find("right",this.virkey);
+
+        this.virkeys = [this.virkey_up,this.virkey_down,this.virkey_left,this.virkey_right];
         this.initMap();
         //if(cc.sdk.is_iphonex())
         //{
@@ -147,7 +155,9 @@ cc.Class({
         this.currLevel = 0;
 
         this.gameDt = 0;
+        this.node.stopAllActions();
 
+        cc.qianqista.event("爆炸蛇关卡_"+this.level);
     },
 
     converToRoadPos: function(pos)
@@ -160,6 +170,9 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
+
+        cc.qianqista.event("爆炸蛇胜利关卡_"+this.level);
+
         this.state = "stop";
         this.rocker.active = false;
         this.dir = "";
@@ -178,6 +191,9 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
+
+        cc.qianqista.event("爆炸蛇失败关卡_"+this.level);
+
         this.state = "stop";
 
         var self = this;
@@ -313,12 +329,22 @@ cc.Class({
                 var tiled = this.getTiled(p);
                 tiled.gid = 0;
                 this.bombBoom(p);
+
+                var boom = res.playAnim("images/game3/tailboom",16,0.05,1,null,true);
+                boom.position = p;
+                boom.zIndex = 100;
+                boom.parent = this.maps;
             }
             else if(name == "tnt")
             {
                 var tiled = this.getTiled(p);
                 tiled.gid = 0;
                 this.tntBoom(p);
+
+                var boom = res.playAnim("images/game3/tailboom",16,0.05,1,null,true);
+                boom.position = p;
+                boom.zIndex = 100;
+                boom.parent = this.maps;
             }
             else if(name == "damStone")
             {
@@ -404,11 +430,17 @@ cc.Class({
         var p4 = pos.add(cc.v2(-this.tiledSize.width,0));
 
         var ps = [p1,p2,p3,p4];
-        for(var i=0;i<ps.length;i++)
-        {
-            var p = ps[i];
-            this.jedgeBoom(p,pos);
-        }
+        var self = this;
+        this.node.runAction(cc.sequence(
+            cc.delayTime(0.3),
+            cc.callFunc(function(){
+                for(var i=0;i<ps.length;i++)
+                {
+                    var p = ps[i];
+                    self.jedgeBoom(p,pos);
+                }
+            })
+        ));
     },
 
     //超级炸弹
@@ -431,16 +463,26 @@ cc.Class({
         var p12 = pos.add(cc.v2(-this.tiledSize.width*2,0));
 
         var ps = [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12];
-        for(var i=0;i<ps.length;i++)
-        {
-            var p = ps[i];
-            this.jedgeBoom(p,pos);
-        }
+
+        var self = this;
+        this.node.runAction(cc.sequence(
+            cc.delayTime(0.3),
+            cc.callFunc(function(){
+                for(var i=0;i<ps.length;i++)
+                {
+                    var p = ps[i];
+                    self.jedgeBoom(p,pos);
+                }
+            })
+        ));
+
     },
 
     updateEmitter: function()
     {
         this.emitterPoints = [];
+        var tntId = config.getTiledId("tnt");
+        var bombId = config.getTiledId("bomb");
         for(var i=0;i<this.emitters.length;i++)
         {
             var emitter = this.emitters[i];
@@ -451,6 +493,7 @@ cc.Class({
                 //查找向右的坐标
                 var b = true;
                 var n = 1;
+
                 while(b && n<this.mapSize.width)
                 {
                     var p = emitter.pos.add(cc.v2(this.tiledSize.width*n,0));
@@ -459,6 +502,12 @@ cc.Class({
                     {
                         this.emitterPoints.push(p);
                         n++;
+                    }
+                    else if(gid == tntId || gid == bombId)
+                    {
+                        this.emitterPoints.push(p);
+                        this.jedgeBoom(p);
+                        b = false;
                     }
                     else
                     {
@@ -485,6 +534,12 @@ cc.Class({
                         this.emitterPoints.push(p);
                         n++;
                     }
+                    else if(gid == tntId || gid == bombId)
+                    {
+                        this.emitterPoints.push(p);
+                        this.jedgeBoom(p);
+                        b = false;
+                    }
                     else
                     {
                         b = false;
@@ -510,6 +565,12 @@ cc.Class({
                         this.emitterPoints.push(p);
                         n++;
                     }
+                    else if(gid == tntId || gid == bombId)
+                    {
+                        this.emitterPoints.push(p);
+                        this.jedgeBoom(p);
+                        b = false;
+                    }
                     else
                     {
                         b = false;
@@ -534,6 +595,12 @@ cc.Class({
                     {
                         this.emitterPoints.push(p);
                         n++;
+                    }
+                    else if(gid == tntId || gid == bombId)
+                    {
+                        this.emitterPoints.push(p);
+                        this.jedgeBoom(p);
+                        b = false;
                     }
                     else
                     {
@@ -591,36 +658,57 @@ cc.Class({
         {
             var pos = event.getLocation();
             var p = pos.sub(cc.v2(cc.winSize.width/2,cc.winSize.height/2));
-            this.rocker.active = true;
-            this.rocker.position = p;
-            this.rocker_ball.position = cc.v2(0,0);
-            this.lastPoint = pos;
+            //this.rocker.active = true;
+            //this.rocker.position = p;
+            //this.rocker_ball.position = cc.v2(0,0);
+            //this.lastPoint = pos;
             this.dir = "";
+
+
+            for(var i=0;i<this.virkeys.length;i++)
+            {
+                var key = this.virkeys[i];
+                var dis = p.sub(key.position.add(this.virkey.position)).mag();
+                if(dis<100)
+                {
+                    this.dir = key.name;
+                    key.scale = 0.9;
+                    break;
+                }
+            }
         }
     },
     touchMove: function(event)
     {
         if(this.state == "start")
         {
-            var pos = event.getLocation();
-            var dis = pos.sub(this.lastPoint).mag();
-            if(dis>10)
-            {
-                var dir = pos.sub(this.lastPoint).normalize();
-                if(dis>this.rocker.width/2)
-                    dis = this.rocker.width/2;
-                this.rocker_ball.position = dir.mul(dis);
-                this.move(dir);
-            }
+            //var pos = event.getLocation();
+            //var dis = pos.sub(this.lastPoint).mag();
+            //if(dis>10)
+            //{
+            //    var dir = pos.sub(this.lastPoint).normalize();
+            //    if(dis>this.rocker.width/2)
+            //        dis = this.rocker.width/2;
+            //    this.rocker_ball.position = dir.mul(dis);
+            //    this.move(dir);
+            //}
         }
     },
     touchUp: function(event)
     {
 
-        if(this.state == "start")
+        //if(this.state == "start")
+        //{
+        //
+        //}
+        //this.rocker.active = false;
+        //this.rocker_ball.position = cc.v2(0,0);
+        this.dir = "";
+
+        for(var i=0;i<this.virkeys.length;i++)
         {
-            this.rocker.active = false;
-            this.dir = "";
+            var key = this.virkeys[i];
+            key.scale =1;
         }
     },
 

@@ -8,6 +8,8 @@ module.exports = {
 
     audio_music:"audio/music",
     audio_button:"audio/button",
+    audio_win:"audio/win",
+    audio_baozha:"audio/baozha",
 
 
     initPools: function()
