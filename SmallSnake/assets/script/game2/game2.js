@@ -18,6 +18,10 @@ cc.Class({
     onLoad: function() {
         cc.myscene = "game2";
         this.level = storage.getLevel(2);
+        if(cc.GAME.helpLevel>0)
+            this.level = cc.GAME.helpLevel;
+        cc.qianqista.showcallback = this.initEnd;
+
         this.initData();
         this.initUI();
         this.addListener();
@@ -29,6 +33,40 @@ cc.Class({
     {
         this.state = "stop";
         this.coin = 0;
+
+        this.updateHelp();
+    },
+
+    initEnd: function()
+    {
+        if(cc.qianqista.isUpdate && cc.qianqista.channel == "game" && cc.qianqista.fromid)
+        {
+            cc. qianqista.isUpdate = false;
+            var snakeId = cc.qianqista.queryData.snakeId;
+            var level = cc.qianqista.queryData.level;
+
+            if(snakeId && level)
+            {
+                cc.GAME.helpLevel = level;
+                cc.director.loadScene("game"+snakeId);
+            }
+
+        }
+    },
+
+    updateHelp: function()
+    {
+        if(cc.GAME.helpLevel==0 && !this.isHasHelp)
+        {
+            var self = this;
+            storage.isHelp(2,this.level,function(r){
+                if(r)
+                {
+                    res.setSpriteFrame("images/common/btn_ask",self.btn_share);
+                    self.isHasHelp = true;
+                }
+            });
+        }
     },
 
 
@@ -36,26 +74,32 @@ cc.Class({
     {
         this.node_game = cc.find("Canvas/node_game");
         this.node_ui = cc.find("Canvas/node_ui");
-        this.node_level = cc.find("level/num",this.node_ui).getComponent(cc.Label);
+        this.node_top = cc.find("Canvas/node_top");
+        this.node_level = cc.find("lvbg/num",this.node_top).getComponent(cc.Label);
+        this.coin_num = cc.find("coinbg/num",this.node_top).getComponent(cc.Label);
+        this.score_num = cc.find("scorebg/num",this.node_top).getComponent(cc.Label);
         this.maps = cc.find("maps",this.node_game);
+
+        this.btn_share = cc.find("share",this.node_ui);
+        this.btn_tishi = cc.find("tishi",this.node_ui);
         this.initMap();
-        //if(cc.sdk.is_iphonex())
-        //{
-        //    var topNode = cc.find("top",this.node_ui);
-        //    var pro = cc.find("pro",this.node_ui);
-        //    topNode.runAction(cc.sequence(
-        //        cc.delayTime(0.1),
-        //        cc.callFunc(function(){
-        //            var s = cc.view.getFrameSize();
-        //            var dpi = cc.winSize.width/s.width;
-        //            topNode.y -= dpi*30;
-        //            pro.y -= dpi*15;
-        //        })
-        //    ));
-        //}
+        if(cc.sdk.is_iphonex())
+        {
+            var topNode = this.node_top;
+            topNode.runAction(cc.sequence(
+                cc.delayTime(0.1),
+                cc.callFunc(function(){
+                    var s = cc.view.getFrameSize();
+                    var dpi = cc.winSize.width/s.width;
+                    topNode.y -= dpi*30;
+                })
+            ));
+        }
 
         this.updateUI();
         this.startGame();
+
+        this.updateTishiAd();
     },
 
     initMap: function()
@@ -78,7 +122,8 @@ cc.Class({
     updateUI: function()
     {
         this.node_level.string = this.level+"";
-        //this.coinnum.string = storage.castNum(storage.getCoin());
+        this.coin_num.string = storage.getCoin();
+        this.score_num.string = storage.getScore();
     },
 
     addCoin: function(num)
@@ -86,6 +131,16 @@ cc.Class({
         this.coin += num;
         //storage.setCoin(storage.getCoin()+num);
         //this.updateUI();
+    },
+
+    getStar: function()
+    {
+        var star = 3;
+        var data = cc.config.gameAwards[1];
+        var time = (new Date().getTime() - this.gameTime)/1000;
+        if(time>=data.bad) star = 1;
+        else if(time>=data.fine) star = 2;
+        return star;
     },
 
     initSnake: function()
@@ -121,6 +176,11 @@ cc.Class({
             block.parent = this.maps;
             this.blocks.push(block);
 
+            //var l = new cc.Node();
+            //var lb = l.addComponent(cc.Label);
+            //lb.string = i;
+            //l.parent = block;
+
             var tip = cc.instantiate(res["prefab_game2_blockTip"]);
             tip.position = pos.sub(subp);
             tip.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
@@ -150,7 +210,7 @@ cc.Class({
         this.initSnake();
 
         this.state = "start";
-        this.gameTime = 0;
+        this.gameTime = new Date().getTime();
         this.currLevel = 0;
 
         this.gameDt = 0;
@@ -175,11 +235,16 @@ cc.Class({
         cc.qianqista.event("画蛇胜利关卡_"+this.level);
 
         this.state = "stop";
-        this.level+=1;
-        this.snake.sel = false;
-        storage.setLevel(2,this.level);
 
-        res.openUI("jiesuan");
+        this.snake.sel = false;
+        if(cc.GAME.helpLevel==0)
+        {
+            this.level+=1;
+            storage.setLevel(2,this.level);
+        }
+
+
+        res.openUI("jiesuan",null,"win");
     },
 
     nextLevel: function()
@@ -209,7 +274,7 @@ cc.Class({
     gameOver: function()
     {
 
-        //res.openUI("jiesuan",null,"fail");
+        res.openUI("jiesuan",null,"fail");
 
 
         //storage.playMusic(res.audio_bgm);
@@ -222,6 +287,14 @@ cc.Class({
         {
             if(i>=this.tishiNum)
                 break;
+            this.tipItems[i].active = true;
+        }
+    },
+
+    showTips2: function()
+    {
+        for(var i=0;i<this.tipItems.length;i++)
+        {
             this.tipItems[i].active = true;
         }
     },
@@ -302,50 +375,85 @@ cc.Class({
                 if(r.line)
                 {
                     //if(!isRemove) return;
-                    if(isMove)
+                    var num = -1;
+                    for(var j=0;j<this.points.length;j++)
                     {
-                        if(this.points.length>1)
+                        var item = this.points[j];
+                        var dis = item.pos.sub(p2).mag();
+                        if(dis<min)
                         {
-                            var item = this.points[this.points.length-2];
-                            var dis = item.pos.sub(p2).mag();
-                            if(dis<min)
-                            {
-                                var item2 = this.points[this.points.length-1];
-                                this.roads[item2.index].line = false;
-                                item2.lastIndex = item.index;
-                                item2.isMove = true;
-                                this.removePath(item2,isMove);
-                                this.points.splice(this.points.length-1,1);
-                            }
-
+                            num = j;
+                            break;
                         }
-
                     }
-                    else
+                    //判断不是最后一格 就删除
+                    if(num != -1)
                     {
-                        var num = -1;
-                        for(var j=0;j<this.points.length;j++)
+                        for(var j=this.points.length-1;j>num;j--)
                         {
-                            var item = this.points[j];
-                            var dis = item.pos.sub(p2).mag();
-                            if(dis<min)
+                            this.roads[this.points[j].index].line = false;
+                            if(isMove)
                             {
-                                num = j;
-                                break;
+                                this.points[j].isMove = isMove;
+                                this.points[j].lastIndex = this.points[j-1].index;
+                                this.removePath(this.points[j],isMove);
                             }
-                        }
-                        //判断不是最后一格 就删除
-                        if(num != -1)
-                        {
-                            for(var j=this.points.length-1;j>num;j--)
+                            else
                             {
-                                this.roads[this.points[j].index].line = false;
-                                this.points[j-1].isMove = false;
+                                this.points[j-1].isMove = isMove;
+                                this.points[j-1].lastIndex = this.points[j-1].index;
                                 this.removePath(this.points[j-1],isMove);
                             }
-                            this.points.splice(num+1,this.points.length-num-1);
                         }
+                        this.points.splice(num+1,this.points.length-num-1);
                     }
+
+
+
+                    //if(isMove)
+                    //{
+                    //    if(this.points.length>1)
+                    //    {
+                    //        var item = this.points[this.points.length-2];
+                    //        var dis = item.pos.sub(p2).mag();
+                    //        if(dis<min)
+                    //        {
+                    //            var item2 = this.points[this.points.length-1];
+                    //            this.roads[item2.index].line = false;
+                    //            item2.lastIndex = item.index;
+                    //            item2.isMove = true;
+                    //            this.removePath(item2,isMove);
+                    //            this.points.splice(this.points.length-1,1);
+                    //        }
+                    //
+                    //    }
+                    //
+                    //}
+                    //else
+                    //{
+                    //    var num = -1;
+                    //    for(var j=0;j<this.points.length;j++)
+                    //    {
+                    //        var item = this.points[j];
+                    //        var dis = item.pos.sub(p2).mag();
+                    //        if(dis<min)
+                    //        {
+                    //            num = j;
+                    //            break;
+                    //        }
+                    //    }
+                    //    //判断不是最后一格 就删除
+                    //    if(num != -1)
+                    //    {
+                    //        for(var j=this.points.length-1;j>num;j--)
+                    //        {
+                    //            this.roads[this.points[j].index].line = false;
+                    //            this.points[j-1].isMove = false;
+                    //            this.removePath(this.points[j-1],isMove);
+                    //        }
+                    //        this.points.splice(num+1,this.points.length-num-1);
+                    //    }
+                    //}
                 }
                 else
                 {
@@ -394,34 +502,46 @@ cc.Class({
         if(this.points.length>1)
         {
             var i = item.index;
+            if(i==0) i = 1;
             var block = this.blocks[i-1];
             block.stopAllActions();
             block.scale = 1;
             block.runAction(cc.scaleTo(0.1,0.8).easing(cc.easeSineIn()));
+
+            //cc.log("i=",i,this.points);
         }
         this.snake.playAni(item,true);
     },
 
     removePath: function(item,isMove)
     {
-        if(this.points.length>1)
+        if(this.points.length>0)
         {
-            if(isMove)
+            for(var i=0;i<this.blocks.length;i++)
             {
-                var i = item.index;
-                var block = this.blocks[i-1];
-                block.stopAllActions();
-                block.scale = 0.8;
-                block.runAction(cc.scaleTo(0.1,1).easing(cc.easeSineIn()));
+                this.blocks[i].stopAllActions();
+                this.blocks[i].scale = 1;
             }
-            else
-            {
-                for(var i=0;i<this.blocks.length;i++)
-                {
-                    this.blocks[i].stopAllActions();
-                    this.blocks[i].scale = 1;
-                }
-            }
+            var i = item.index;
+            if(i==0) i = 1;
+            var block = this.blocks[i-1];
+            block.stopAllActions();
+            block.scale = 0.8;
+            block.runAction(cc.scaleTo(0.1,1).easing(cc.easeSineIn()));
+
+            //cc.log("i=",i,this.points);
+            //if(isMove)
+            //{
+            //
+            //}
+            //else
+            //{
+            //    for(var i=0;i<this.blocks.length;i++)
+            //    {
+            //        this.blocks[i].stopAllActions();
+            //        this.blocks[i].scale = 1;
+            //    }
+            //}
 
         }
         this.snake.playAni(item,false);
@@ -479,6 +599,41 @@ cc.Class({
         //}
     },
 
+    updateTishiAd: function()
+    {
+        this.useShare = false;
+        this.useCoin = false;
+        var cost = cc.config.gameAwards[1].cost;
+        var coin = storage.getCoin();
+        if(coin>=cost)
+        {
+            this.useCoin = true;
+            this.btn_tishi.getChildByName("share").active = false;
+            this.btn_tishi.getChildByName("video").active = false;
+            this.btn_tishi.getChildByName("coin").active = true;
+            cc.find("coin/num",this.btn_tishi).getComponent(cc.Label).string = cost;
+            return;
+        }
+
+        if(cc.GAME.share)
+        {
+            var rad = parseInt(cc.GAME.huaTishiAd);
+            if(Math.random()*100 < rad)
+            {
+                this.useShare = true;
+                this.btn_tishi.getChildByName("share").active = true;
+                this.btn_tishi.getChildByName("video").active = false;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+            else
+            {
+                this.btn_tishi.getChildByName("share").active = false;
+                this.btn_tishi.getChildByName("video").active = true;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+        }
+    },
+
 
     click: function(event,data)
     {
@@ -492,7 +647,58 @@ cc.Class({
         }
         else if(data == "tip")
         {
-            this.showTips();
+            var self = this;
+            if(this.useCoin)
+            {
+                var cost = cc.config.gameAwards[1].cost;
+                var coin = storage.getCoin();
+                if(coin>=cost)
+                {
+                    coin -= cost;
+                    storage.setCoin(coin);
+                    storage.uploadCoin();
+                    this.updateUI();
+                    this.showTips();
+                }
+                else
+                {
+                    cc.res.showToast("金币不足！");
+                }
+            }
+            else
+            {
+                if(this.useShare)
+                {
+                    cc.sdk.share(function(r){
+                        if(r)
+                        {
+                            self.showTips();
+                        }
+                    },"huaTishiAd");
+                }
+                else
+                {
+                    cc.sdk.showVedio(function(r){
+                        if(r)
+                        {
+                            self.showTips();
+                        }
+                    });
+                }
+            }
+            this.updateTishiAd();
+        }
+        else if(data == "share")
+        {
+            if(this.isHasHelp)
+            {
+                this.showTips2();
+            }
+            else
+            {
+                cc.sdk.share(null,"game&snakeId=2&level="+this.level);
+            }
+
         }
         cc.log(data);
     },

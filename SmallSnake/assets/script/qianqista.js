@@ -50,6 +50,8 @@ module.exports = {
     pkfromid:"",
     sharetime:0,
     sharenum:0,
+    queryData:null,
+    isUpdate:false,
     init: function(gameId,secret,gameName,initcallback,showcallback)
     {
         this.gameId = gameId;
@@ -66,6 +68,8 @@ module.exports = {
                 var path = opts.path;
                 var query = opts.query;
                 var scene = opts.scene;
+                this.queryData = query;
+                this.isUpdate = true;
                 if(path && path.indexOf('channel=') != -1)
                 {
                     this.channel = path.substr(path.indexOf("channel=")+8);
@@ -126,11 +130,16 @@ module.exports = {
                 console.log('power:', self.power);
 
                 var query = res.query;
+                self.queryData = query;
+                this.isUpdate = true;
                 if(query && query.fromid && query.fromid.length > 0)
                 {
                     self.pkfromid = query.fromid;
+                    self.fromid = query.fromid;
                 }
-                if(self.power == 1 && query && query.channel && query.channel == "shareonline" && self.pkfromid)
+                if(query && query.channel && query.channel.length > 0)
+                    self.channel = query.channel;
+                if(query && query.channel && query.channel == "game" && self.pkfromid)
                 {
                     if(self.showcallback)
                         self.showcallback();
@@ -144,7 +153,7 @@ module.exports = {
                     //else if(cc.myscene == "main")
                     //    cc.storage.playMusic(cc.res.audio_bgm);
                     if(cc.myscene == "main")
-                        cc.storage.playMusic(cc.res.audio_bgm);
+                        cc.storage.playMusic(cc.res.audio_music);
                 }
 
             });
@@ -179,6 +188,7 @@ module.exports = {
     {
         this.hidecallback = hidecallback;
     },
+
 
     login: function(isSuccess, userInfo,callback)
     {
@@ -371,6 +381,47 @@ module.exports = {
                 if(callback)
                     callback(res);
             });
+        }
+    },
+
+    uploadHelpDatas: function(snakeId,level)
+    {
+        if(this.state == 1)
+        {
+            var self = this;
+            if(this.fromid && this.fromid.length>1 && this.fromid != this.openid)
+            {
+                this.sendRequest("datas",{gameId:this.gameId,openid:this.fromid},function(res){
+                    if(res.state == 200)
+                    {
+                        var json = JSON.parse(res.data);
+
+                        var helps = json.help == undefined ? [] : json.help;
+                        var helpitem = {openid:self.openid,name:self.userName,pic:self.avatarUrl,snakeId:snakeId,level:level};
+                        var ishave = false;
+                        for(var i=0;i<helps.length;i++)
+                        {
+                            if(helps[i].snakeId == helpitem.snakeId && helps[i].level == helpitem.level)
+                            {
+                                ishave = true;
+                                break;
+                            }
+                        }
+                        if(!ishave)
+                        {
+                            helps.push(helpitem);
+                            var obj = {};
+                            obj.help = helps;
+                            var datas = JSON.stringify(obj);
+                            console.log("upload helps:",datas);
+                            self.sendRequest("uploaddatas",{gameId:self.gameId,openid:self.fromid,datas:datas},function(res){
+                                console.log("upload helps:",res);
+                            });
+                        }
+                    }
+                });
+
+            }
         }
     },
 

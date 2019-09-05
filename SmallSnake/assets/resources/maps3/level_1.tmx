@@ -1,80 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
- <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
-  <image source="element.png" width="520" height="40"/>
-  <tile id="0">
-   <properties>
-    <property name="name" value="moveStone"/>
-   </properties>
-  </tile>
-  <tile id="1">
-   <properties>
-    <property name="name" value="bomb"/>
-   </properties>
-  </tile>
-  <tile id="2">
-   <properties>
-    <property name="name" value="key"/>
-   </properties>
-  </tile>
-  <tile id="3">
-   <properties>
-    <property name="name" value="lock"/>
-   </properties>
-  </tile>
-  <tile id="4">
-   <properties>
-    <property name="name" value="damStone"/>
-   </properties>
-  </tile>
-  <tile id="5">
-   <properties>
-    <property name="name" value="intactStone"/>
-   </properties>
-  </tile>
-  <tile id="6">
-   <properties>
-    <property name="name" value="chest"/>
-   </properties>
-  </tile>
-  <tile id="7">
-   <properties>
-    <property name="name" value="emitter"/>
-   </properties>
-  </tile>
-  <tile id="8">
-   <properties>
-    <property name="name" value="tnt"/>
-   </properties>
-  </tile>
-  <tile id="9">
-   <properties>
-    <property name="name" value="brick"/>
-   </properties>
-  </tile>
-  <tile id="10">
-   <properties>
-    <property name="name" value="wall"/>
-   </properties>
-  </tile>
-  <tile id="11">
-   <properties>
-    <property name="name" value="coin"/>
-   </properties>
-  </tile>
-  <tile id="12">
-   <properties>
-    <property name="name" value="exit"/>
-   </properties>
-  </tile>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="20" tilewidth="55" tileheight="55">
+ <tileset firstgid="1" name="element2" tilewidth="55" tileheight="55">
+  <image source="element2.png" width="715" height="715"/>
  </tileset>
- <layer name="layer" width="16" height="28">
+ <layer name="layer1" width="14" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2BoA24yMbJ+dMCDhpEBLxb9lNg/CkbBKBgYAAD0WwGI
+   eJxjYBgFIxUIoGE+IOaHYj40vsAAuXEUDG0AAKgXALc=
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFQxlwU4CRgSkaRge8VLRrFIwcAAAF9wIs
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFwwlooOFRMAoGEgAAmq8AoQ==
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos" x="98.6667" y="498.667">
+  <object name="startPos" x="86.6667" y="522.667">
    <properties>
     <property name="dir" value="right"/>
    </properties>

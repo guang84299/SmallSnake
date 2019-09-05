@@ -1,5 +1,5 @@
 {
-  "ver": "2.3.0",
+  "ver": "2.3.1",
   "uuid": "405e9318-6f0c-4a9c-816f-9ee9fb1fd363",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -18,14 +18,14 @@
       "offsetY": 0,
       "trimX": 0,
       "trimY": 0,
-      "width": 20,
-      "height": 8,
-      "rawWidth": 20,
-      "rawHeight": 8,
-      "borderTop": 2,
-      "borderBottom": 2,
-      "borderLeft": 2,
-      "borderRight": 2,
+      "width": 69,
+      "height": 25,
+      "rawWidth": 69,
+      "rawHeight": 25,
+      "borderTop": 10,
+      "borderBottom": 10,
+      "borderLeft": 13,
+      "borderRight": 13,
       "subMetas": {}
     }
   }

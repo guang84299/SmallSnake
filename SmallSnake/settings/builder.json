@@ -20,7 +20,7 @@
   "includeSDKBox": false,
   "inlineSpriteFrames": true,
   "inlineSpriteFrames_native": true,
-  "md5Cache": false,
+  "md5Cache": true,
   "mergeStartScene": false,
   "optimizeHotUpdate": false,
   "orientation": {
@@ -39,10 +39,10 @@
   "title": "SmallSnake",
   "webOrientation": "auto",
   "wechatgame": {
-    "REMOTE_SERVER_ROOT": "",
+    "REMOTE_SERVER_ROOT": "https://www.7q7q.top/subPackage/snake107",
     "appid": "wx0444b5396e3d18ba",
     "orientation": "portrait",
-    "subContext": ""
+    "subContext": "rank"
   },
   "xxteaKey": "741dcbbb-e5c7-4b",
   "zipCompressJs": true

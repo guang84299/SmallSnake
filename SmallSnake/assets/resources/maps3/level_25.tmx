@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
  <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
-  <image source="element.png" width="520" height="40"/>
+  <image source="element.png" width="520" height="512"/>
  </tileset>
- <layer name="layer" width="16" height="28">
+ <layer name="layer1" width="16" height="28">
   <data encoding="base64" compression="zlib">
-   eJztkTsOwCAMQ83ShfT+1+0UqTIfu3SoKmHJExgnD2DrS1XDKv/2PH2QnXyvJx708717f8Eah6AZ1Bz5fkHLwOHAZ4F2Biff63Y4zPodDvn3o/0VB9WvOKj9Rxwq5Wf9zOGk/Kq3/q0LyhYEbw==
+   eJxjYBgFlAI+NMyPhCkxR4BM/fxQvaTqF8DiBlL1w/xNjjnoekjRjxzuML+Toh+bm0nVj8vvxKQHfHYjm0OM/bB4QE5HhOwn5H9C4YAe5rjcQm7aGgWjgBYAAD51BfE=
+  </data>
+ </layer>
+ <layer name="layer2" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJztkTsOwCAMQ83SBfU4uf/VOkWqzMcujMWSJzBOHsC/VQ2r/O55+iI7+V5PfOjne+/+gjUOQTOoOfL9gpaBw4HPAu0MTr7X7XCY9Tsc8u9H+ysOql9xUPuPOFTKz/qZw035VR8d7egBtXgHzA==
+  </data>
+ </layer>
+ <layer name="layer3" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgw1oDAL7B9INGgwD6wYNhoF1A7r99HYDNvsHOk2OglFACwAARDQDSQ==
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos" x="60" y="301.333">
+  <object name="startPos" x="60" y="221.333">
    <properties>
     <property name="dir" value="right"/>
    </properties>

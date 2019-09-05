@@ -18,10 +18,47 @@ cc.Class({
     onLoad: function() {
         cc.myscene = "game1";
         this.level = storage.getLevel(1);
+
+        if(cc.GAME.helpLevel>0)
+            this.level = cc.GAME.helpLevel;
+        cc.qianqista.showcallback = this.initEnd;
+
         this.initData();
         this.initUI();
         this.yindao = storage.getYinDao();
+        this.replayNum = 0;
+    },
 
+    initEnd: function()
+    {
+        if(cc.qianqista.isUpdate && cc.qianqista.channel == "game" && cc.qianqista.fromid)
+        {
+            cc. qianqista.isUpdate = false;
+            var snakeId = cc.qianqista.queryData.snakeId;
+            var level = cc.qianqista.queryData.level;
+
+            if(snakeId && level)
+            {
+                cc.GAME.helpLevel = level;
+                cc.director.loadScene("game"+snakeId);
+            }
+
+        }
+    },
+
+    updateHelp: function()
+    {
+        if(cc.GAME.helpLevel==0 && !this.isHasHelp)
+        {
+            var self = this;
+            storage.isHelp(1,this.level,function(r){
+                if(r)
+                {
+                    res.setSpriteFrame("images/common/btn_ask",self.btn_share);
+                    self.isHasHelp = true;
+                }
+            });
+        }
     },
 
 
@@ -29,6 +66,11 @@ cc.Class({
     {
         this.state = "stop";
         this.coin = 0;
+        this.tishiNum = -1;
+        this.isShowTishi = false;
+        this.isAdTishi = false;
+
+        this.updateHelp();
     },
 
 
@@ -36,27 +78,32 @@ cc.Class({
     {
         this.node_game = cc.find("Canvas/node_game");
         this.node_ui = cc.find("Canvas/node_ui");
-        this.node_level = cc.find("level/num",this.node_ui).getComponent(cc.Label);
+        this.node_top = cc.find("Canvas/node_top");
+        this.node_level = cc.find("lvbg/num",this.node_top).getComponent(cc.Label);
+        this.coin_num = cc.find("coinbg/num",this.node_top).getComponent(cc.Label);
+        this.score_num = cc.find("scorebg/num",this.node_top).getComponent(cc.Label);
         this.maps = cc.find("maps",this.node_game);
         this.btn_replay = cc.find("replay",this.node_ui);
+        this.btn_share = cc.find("share",this.node_ui);
+        this.btn_tishi = cc.find("tishi",this.node_ui);
         this.initMap();
-        //if(cc.sdk.is_iphonex())
-        //{
-        //    var topNode = cc.find("top",this.node_ui);
-        //    var pro = cc.find("pro",this.node_ui);
-        //    topNode.runAction(cc.sequence(
-        //        cc.delayTime(0.1),
-        //        cc.callFunc(function(){
-        //            var s = cc.view.getFrameSize();
-        //            var dpi = cc.winSize.width/s.width;
-        //            topNode.y -= dpi*30;
-        //            pro.y -= dpi*15;
-        //        })
-        //    ));
-        //}
+        if(cc.sdk.is_iphonex())
+        {
+            var topNode = this.node_top;
+            topNode.runAction(cc.sequence(
+                cc.delayTime(0.1),
+                cc.callFunc(function(){
+                    var s = cc.view.getFrameSize();
+                    var dpi = cc.winSize.width/s.width;
+                    topNode.y -= dpi*30;
+                })
+            ));
+        }
 
         this.updateUI();
         this.startGame();
+
+        this.updateTishiAd();
     },
 
     initMap: function()
@@ -79,7 +126,8 @@ cc.Class({
     updateUI: function()
     {
         this.node_level.string = this.level+"";
-        //this.coinnum.string = storage.castNum(storage.getCoin());
+        this.coin_num.string = storage.getCoin();
+        this.score_num.string = storage.getScore();
     },
 
     addCoin: function(num)
@@ -89,6 +137,15 @@ cc.Class({
         //this.updateUI();
     },
 
+    getStar: function()
+    {
+        var star = 3;
+        var data = cc.config.gameAwards[0];
+        if(this.replayNum>=data.bad) star = 1;
+        else if(this.replayNum>=data.fine) star = 2;
+        return star;
+    },
+
     initSnake: function()
     {
         this.tmxLayers = this.tmx.getComponent(cc.TiledMap).getLayers();
@@ -96,9 +153,12 @@ cc.Class({
         this.snake = cc.find("snake",this.node_game).getComponent("Snake");
         this.snake.init(this.tiledSize);
         this.exit = cc.find("exit",this.node_game);
+        this.exit_mask = cc.find("exit/mask",this.node_game);
+        this.exit.zIndex = 99;
 
-        var exit_left = cc.find("exit_left",this.node_game);
-        var exit_right = cc.find("exit_right",this.node_game);
+        var exit_ani = cc.find("exit_ani",this.node_game);
+        exit_ani.stopAllActions();
+        exit_ani.runAction(cc.repeatForever(cc.rotateBy(2,-180)));
 
         var objGroup = cc.find("objLayer",this.tmx).getComponent(cc.TiledObjectGroup);
 
@@ -114,8 +174,7 @@ cc.Class({
         var pos3 = this.converToRoadPos(cc.v2(obj3.x,obj3.y)).sub(subp);
 
         this.exit.position = cc.v2(exit.x,exit.y).sub(subp);
-        exit_left.position = this.exit.position;
-        exit_right.position = this.exit.position;
+        exit_ani.position = this.exit.position.add(cc.v2(0,0));
 
         if(this.apples && this.apples.length>0)
         {
@@ -141,7 +200,8 @@ cc.Class({
             var obj = objs[i];
             if(obj.name == "apple")
             {
-                var apple = cc.instantiate(res["prefab_game1_apple"]);
+                var apple = res.playAnim("images/game1/apples",3,0.1,-1);
+                //var apple = cc.instantiate(res["prefab_game1_apple"]);
                 apple.position = this.converToRoadPos(cc.v2(obj.x,obj.y)).sub(subp);
                 this.node_game.addChild(apple);
 
@@ -172,6 +232,37 @@ cc.Class({
         }
 
         this.snake.initPos(pos1,pos2,pos3);
+        this.initTips();
+    },
+
+    initTips: function()
+    {
+        this.tipItems = [];
+        var objGroup = cc.find("tipsLayer",this.tmx).getComponent(cc.TiledObjectGroup);
+        var objs = objGroup.getObjects();
+
+        var subp = cc.v2(640/2,1136/2);
+
+        for(var i=0;i<objs.length;i++)
+        {
+            var obj = objs[i];
+            var p = this.converToRoadPos(cc.v2(obj.x,obj.y)).sub(subp);
+
+            var tip = cc.instantiate(res["prefab_game2_blockTip"]);
+            tip.position = p;
+            tip.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
+            tip.parent = this.node_game;
+            tip.zIndex = 99;
+            var ang = 0;
+            if(obj.dir == "up") ang = 180;
+            else if(obj.dir == "down") ang = 0;
+            else if(obj.dir == "left") ang = -90;
+            else if(obj.dir == "right") ang = 90;
+            tip.angle = ang;
+            tip.active = false;
+            this.tipItems.push(tip);
+        }
+        //cc.log(objGroup);
     },
 
     converToRoadPos: function(pos)
@@ -233,11 +324,16 @@ cc.Class({
         cc.qianqista.event("蛇求生胜利关卡_"+this.level);
 
         this.state = "stop";
-        this.level+=1;
-        storage.setLevel(1,this.level);
+
+        if(cc.GAME.helpLevel==0)
+        {
+            this.level+=1;
+            storage.setLevel(1,this.level);
+        }
 
 
-        res.openUI("jiesuan");
+
+        res.openUI("jiesuan",null,"win");
 
 
         //storage.playSound(res.audio_1st);
@@ -271,11 +367,37 @@ cc.Class({
     gameOver: function()
     {
 
-        //res.openUI("jiesuan",null,"fail");
+        res.openUI("jiesuan",null,"fail");
 
 
         //storage.playMusic(res.audio_bgm);
     },
+
+    showTips: function()
+    {
+        if(this.isShowTishi)
+        {
+            if(this.tishiNum>=0)
+            {
+                this.tipItems[this.tishiNum].runAction(cc.fadeOut(0.8));
+                //this.tipItems[this.tishiNum].active = false;
+            }
+
+            this.tishiNum ++;
+            if(this.tishiNum>=this.tipItems.length)
+            {
+                this.tishiNum = -1;
+                this.isShowTishi = false;
+                return;
+            }
+            this.tipItems[this.tishiNum].stopAllActions();
+            this.tipItems[this.tishiNum].opacity = 255;
+            this.tipItems[this.tishiNum].active = true;
+
+            //cc.log(this.tishiNum,this.tipItems[this.tishiNum]);
+        }
+    },
+
 
     playReplayAni: function()
     {
@@ -290,21 +412,39 @@ cc.Class({
         this.btn_replay.runAction(ac);
     },
 
-
-    updateLevel: function(dt)
+    updateTishiAd: function()
     {
-        this.gameTime+=dt;
-        this.levelDt += dt;
-        //var level = Math.floor(this.gameTime/60);
-        //if(level>=config.carLevel.length) level = config.carLevel.length-1;
-        //this.currLevel = level;
-        if(this.levelDt>1)
+        this.useShare = false;
+        this.useCoin = false;
+        var cost = cc.config.gameAwards[0].cost;
+        var coin = storage.getCoin();
+        if(coin>=cost)
         {
-            this.levelDt = 0;
-
+            this.useCoin = true;
+            this.btn_tishi.getChildByName("share").active = false;
+            this.btn_tishi.getChildByName("video").active = false;
+            this.btn_tishi.getChildByName("coin").active = true;
+            cc.find("coin/num",this.btn_tishi).getComponent(cc.Label).string = cost;
+            return;
         }
 
-
+        if(cc.GAME.share)
+        {
+            var rad = parseInt(cc.GAME.appleTishiAd);
+            if(Math.random()*100 < rad)
+            {
+                this.useShare = true;
+                this.btn_tishi.getChildByName("share").active = true;
+                this.btn_tishi.getChildByName("video").active = false;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+            else
+            {
+                this.btn_tishi.getChildByName("share").active = false;
+                this.btn_tishi.getChildByName("video").active = true;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+        }
     },
 
 
@@ -332,7 +472,71 @@ cc.Class({
         }
         else if(data == "replay")
         {
+            this.replayNum ++;
             this.resetData();
+        }
+        else if(data == "tishi")
+        {
+            var self = this;
+            if(this.useCoin)
+            {
+                var cost = cc.config.gameAwards[0].cost;
+                var coin = storage.getCoin();
+                if(coin>=cost)
+                {
+                    coin -= cost;
+                    storage.setCoin(coin);
+                    storage.uploadCoin();
+                    this.updateUI();
+                    if(!this.isShowTishi)
+                    {
+                        this.isShowTishi = true;
+                        this.schedule(this.showTips.bind(this),0.2,this.tipItems.length);
+                    }
+                }
+                else
+                {
+                    cc.res.showToast("金币不足！");
+                }
+            }
+            else
+            {
+                if(this.useShare)
+                {
+                    cc.sdk.share(function(r){
+                        if(r)
+                        {
+                            self.isShowTishi = true;
+                            self.schedule(self.showTips.bind(self),0.2,self.tipItems.length);
+                        }
+                    },"appleTishiAd");
+                }
+                else
+                {
+                    cc.sdk.showVedio(function(r){
+                        if(r)
+                        {
+                            //self.isAdTishi = true;
+                            self.isShowTishi = true;
+                            self.schedule(self.showTips.bind(self),0.2,self.tipItems.length);
+                        }
+                    });
+                }
+            }
+            this.updateTishiAd();
+        }
+        else if(data == "share")
+        {
+            if(this.isHasHelp)
+            {
+                this.isShowTishi = true;
+                this.schedule(this.showTips.bind(this),0.2,this.tipItems.length);
+            }
+            else
+            {
+                cc.sdk.share(null,"game&snakeId=1&level="+this.level);
+            }
+
         }
         cc.log(data);
     },

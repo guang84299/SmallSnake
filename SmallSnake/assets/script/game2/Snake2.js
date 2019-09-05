@@ -29,9 +29,9 @@ cc.Class({
         this.tailAni.zIndex = 991;
 
 
-        this.head.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
+        this.head.setContentSize(cc.size(this.tiledSize.width*1,this.tiledSize.height*(134/117)));
         this.body.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
-        this.tail.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*0.9));
+        this.tail.setContentSize(cc.size(this.tiledSize.width*1,this.tiledSize.height*1));
 
         cc.find("head/di",this.node).setContentSize(this.head.getContentSize());
         cc.find("tail/di",this.node).setContentSize(this.tail.getContentSize());
@@ -79,36 +79,50 @@ cc.Class({
 
 
 
-        this.tailAni.destroyAllChildren();
-        var node2 = cc.res.playAnim("images/game2/tail",20,0.08,-1,null,true);
-        node2.y = this.tiledSize.height*0.8;
-        this.tailAni.addChild(node2);
-        node2.scale = this.tiledSize.width/116;
+        //this.tailAni.destroyAllChildren();
+        //var node2 = cc.res.playAnim("images/game2/tail",20,0.08,-1,null,true);
+        //node2.y = this.tiledSize.height*0.8;
+        //this.tailAni.addChild(node2);
+        //node2.scale = this.tiledSize.width/116;
         this.playIdleAni();
+
+        //this.head.scale = this.tiledSize.width/117;
+        this.headAni.scale = this.tiledSize.width/117;
+        //this.tailAni.scale = this.tiledSize.width/45;
     },
 
     playIdleAni: function()
     {
         this.isRunAni = false;
         this.headAni.destroyAllChildren();
-        var node = cc.res.playAnim("images/game2/idle",30,0.08,-1,null,true);
+        var node = cc.res.playAnim("images/game2/idle",6,0.08,-1,null,true);
+        node.y = -this.tiledSize.height*0.2;
         this.headAni.addChild(node);
-        node.scale = this.tiledSize.width/116;
+        //node.scale = this.tiledSize.width/117;
+
+        //var self = this;
+        //this.head.stopAllActions();
+        //this.head.runAction(cc.sequence(
+        //    cc.delayTime(Math.random()*5+2),
+        //    cc.callFunc(function(){
+        //        self.playIdleAni();
+        //    })
+        //));
     },
 
     playRunAni: function()
     {
-        if(!this.isRunAni)
-        {
-            this.isRunAni = true;
-            var self = this;
-            this.headAni.destroyAllChildren();
-            var node = cc.res.playAnim("images/game2/run",20,0.08,1,function(){
-                self.playIdleAni();
-            },true);
-            this.headAni.addChild(node);
-            node.scale = this.tiledSize.width/116;
-        }
+        //if(!this.isRunAni)
+        //{
+        //    this.isRunAni = true;
+        //    var self = this;
+        //    this.headAni.destroyAllChildren();
+        //    var node = cc.res.playAnim("images/game2/run",6,0.08,1,function(){
+        //        self.playIdleAni();
+        //    },true);
+        //    this.headAni.addChild(node);
+        //    node.scale = this.tiledSize.width/116;
+        //}
     },
 
 
@@ -130,7 +144,7 @@ cc.Class({
             {
                 pos = this.bodys[item.lastIndex].pos;
             }
-            var t = 0.1;
+            var t = 0.05;
             if(isAdd)  self.updateBodyDir(item.index,isAdd,1);
             this.head.runAction(cc.sequence(
                 cc.moveTo(t,pos).easing(cc.easeSineIn()),
@@ -191,11 +205,12 @@ cc.Class({
 
     updateTailDir: function(dir)
     {
-        var ang = 90;
-        if(dir == 2) ang = -90;
-        else if(dir == 3) ang = 180;
-        else if(dir == 4) ang = 0;
+        var ang = 180;
+        if(dir == 2) ang = 0;
+        else if(dir == 3) ang = -90;
+        else if(dir == 4) ang = 90;
         this.tail.angle = ang;
+        //cc.log(dir);
     },
 
     updateBodyDir: function(index,isAdd,num)
@@ -226,31 +241,90 @@ cc.Class({
                 if(i!=bodys.length-1)
                     p1 = bodys[i+1].pos;
                 var p2 = body.pos;
+                var p3 = p2;
+                if(i>0)
+                    p3 = bodys[i-1].pos;
 
                 body.position = body.pos;
 
                 var isTail = false;
                 if(p2.x == this.tail.x && p2.y == this.tail.y)
                     isTail = true;
+                if(isTail) body.scale = 0;
 
-                if(p1.x != p2.x)
+                body.scaleX = 1;
+                body.angle = 0;
+                cc.res.setSpriteFrame("images/game2/body",body);
+               if(p1.x != p2.x)
                 {
-                    body.setContentSize(cc.size(this.tiledSize.width * 1.2, this.tiledSize.height * 0.9));
-                    var dis = this.tiledSize.width*0.15;
-                    if(p1.x < p2.x)
-                        dis = -dis;
-                    if(isTail) dis *= 2;
-                    body.x += dis;
+                    //body.setContentSize(cc.size(this.tiledSize.width * 1.2, this.tiledSize.height * 0.9));
+                    //var dis = this.tiledSize.width*0.15;
+                    //if(p1.x < p2.x)
+                    //    dis = -dis;
+                    //if(isTail) dis *= 2;
+                    //body.x += dis;
+                    body.setContentSize(cc.size(this.tiledSize.width * 1, this.tiledSize.height *1));
                 }
-                else
+                else if(p1.y != p2.y)
                 {
-                    body.setContentSize(cc.size(this.tiledSize.width*0.9,this.tiledSize.height*1.2));
-                    var dis = this.tiledSize.height*0.15;
-                    if(p1.y < p2.y)
-                        dis = -dis;
-                    if(isTail) dis *= 2;
-                    body.y += dis;
+                    //body.setContentSize(cc.size(this.tiledSize.width*1.2,this.tiledSize.height*0.9));
+                    //var dis = this.tiledSize.height*0.15;
+                    //if(p1.y < p2.y)
+                    //    dis = -dis;
+                    //if(isTail) dis *= 2;
+                    //body.y += dis;
+                    body.setContentSize(cc.size(this.tiledSize.width * 1, this.tiledSize.height *1));
+                    body.angle = 90;
                 }
+
+                if(p1.x != p3.x && p1.y != p3.y)
+                {
+                    cc.res.setSpriteFrame("images/game2/body2",body);
+
+                    if(p1.x>p3.x)
+                    {
+                        if(p1.y>p3.y)
+                        {
+                            body.scaleX = -1;
+                            if(p1.y == p2.y)
+                            {
+                                body.angle = 90;
+                            }
+                            else
+                                body.angle = -90;
+                        }
+                        else
+                        {
+                            if(p1.y == p2.y)
+                                body.angle = 90;
+                            else
+                                body.angle = -90;
+                        }
+
+                    }
+                    else
+                    {
+                        if(p1.y>p3.y)
+                        {
+                            if(p1.y == p2.y)
+                                body.angle = -90;
+                            else
+                                body.angle = 90;
+                        }
+                        else
+                        {
+                            if(p1.y == p2.y)
+                                body.angle = 180;
+                            else
+                                body.angle = 0;
+                        }
+
+                    }
+
+
+
+                }
+
             }
 
         }

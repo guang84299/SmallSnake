@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="25" tilewidth="46" tileheight="46">
+ <tileset firstgid="1" name="road" tilewidth="46" tileheight="58">
+  <image source="road.png" width="184" height="58"/>
+ </tileset>
+ <layer name="layer1" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUYAOMQMwExMxQPgsO8VEwCkgFACooABE=
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2B4AxYK5UfBKKA2AAAZmAAJ
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2BoABYK5UfBKBgsAAAbWAAJ
+  </data>
+ </layer>
+ <layer name="layer4" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4C+gIVC+VEwCoY6AAAdGAAJ
+  </data>
+ </layer>
+ <layer name="layer5" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4A8wEKh/CgYBSMVAAAe2AAJ
+  </data>
+ </layer>
+ <layer name="layer6" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFIx0wAjETEDMTKT4KRsEooAwAAC4YAA0=
+  </data>
+ </layer>
+ <layer name="layer7" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFww2wEOCPglEwCgYWAAAiWAAJ
+  </data>
+ </layer>
+ <layer name="layer8" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgxWwEOCPglEwCoYmAAAkGAAJ
+  </data>
+ </layer>
+ <layer name="layer9" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtAYsBPijYBSMgpEFACXYAAk=
+  </data>
+ </layer>
+ <layer name="layer10" width="14" height="25">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFxAIWAvxRMApGwSggBgAAJ5gACQ==
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos1" x="390.333" y="622"/>
+  <object name="startPos2" x="345.333" y="621.333"/>
+  <object name="startPos3" x="298.333" y="622"/>
+  <object name="apple" x="298" y="666"/>
+  <object name="apple" x="390.667" y="666.667"/>
+  <object name="apple" x="298.333" y="575.667"/>
+  <object name="apple" x="345.333" y="530.667"/>
+  <object name="apple" x="390.667" y="484"/>
+  <object name="stone" x="298.667" y="532"/>
+  <object name="stone" x="390.667" y="573.333"/>
+  <object name="trap" x="205.667" y="621">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="483" y="619.333">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+  </object>
+  <object name="trap" x="205.667" y="575.333">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="483.333" y="577.333">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="206.333" y="529">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="483.333" y="531.333">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="205.667" y="484">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+  </object>
+  <object name="trap" x="482.333" y="484">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+  </object>
+  <object name="trap" x="252.333" y="483.667">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+  </object>
+  <object name="trap" x="437" y="485">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+  </object>
+  <object name="trap" x="298.333" y="437">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="390.667" y="438">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="297.333" y="390.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="390.667" y="388">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="298" y="346.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="390.667" y="344">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="297.333" y="299">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="390.667" y="298.667">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="trap" x="298" y="252.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="trap" x="390.333" y="252.667">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="exit" x="345" y="207"/>
+ </objectgroup>
+ <objectgroup name="tipsLayer">
+  <object name="1" x="342.667" y="484">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="2" x="345.333" y="436">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="3" x="345.333" y="388">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="4" x="345.333" y="346.667">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="5" x="344" y="296">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="6" x="345.333" y="249.333">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="7" x="344" y="206.667">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
+</map>

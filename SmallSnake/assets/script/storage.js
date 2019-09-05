@@ -121,10 +121,6 @@ module.exports = {
     {
         cc.sys.localStorage.setItem(this.pfix+"coin",Math.floor(coin));
 
-        //if(coin>=900000)
-        //{
-        //    this.addMyCarIds(10);
-        //}
     },
 
     getCoin: function()
@@ -138,6 +134,27 @@ module.exports = {
     {
         var datas = {};
         datas.coin = this.getCoin();
+        var data = JSON.stringify(datas);
+        cc.qianqista.uploaddatas(data);
+    },
+
+    setScore: function(score)
+    {
+        cc.sys.localStorage.setItem(this.pfix+"score",Math.floor(score));
+
+    },
+
+    getScore: function()
+    {
+        var score = cc.sys.localStorage.getItem(this.pfix+"score");
+        score = score ? score : 0;
+        return Number(score);
+    },
+
+    uploadScore: function()
+    {
+        var datas = {};
+        datas.score = this.getScore();
         var data = JSON.stringify(datas);
         cc.qianqista.uploaddatas(data);
     },
@@ -199,6 +216,14 @@ module.exports = {
         return Number(time);
     },
 
+    uploadLoginTime: function()
+    {
+        var datas = {};
+        datas.login_time = this.getLoginTime();
+        var data = JSON.stringify(datas);
+        cc.qianqista.uploaddatas(data);
+    },
+
     setLoginDay: function(day)
     {
         cc.sys.localStorage.setItem(this.pfix+"login_day",day);
@@ -211,6 +236,103 @@ module.exports = {
         return Number(day);
     },
 
+    uploadLoginDay: function()
+    {
+        var datas = {};
+        datas.login_day = this.getLoginDay();
+        var data = JSON.stringify(datas);
+        cc.qianqista.uploaddatas(data);
+    },
+
+    setQianDaoNum: function(num)
+    {
+        cc.sys.localStorage.setItem(this.pfix+"qiandao_num",num);
+    },
+
+    getQianDaoNum: function()
+    {
+        var num = cc.sys.localStorage.getItem(this.pfix+"qiandao_num");
+        num = num ? num : 0;
+        return Number(num);
+    },
+
+    uploadQianDaoNum: function()
+    {
+        var datas = {};
+        datas.qiandao_num = this.getQianDaoNum();
+        var data = JSON.stringify(datas);
+        cc.qianqista.uploaddatas(data);
+    },
+
+    //setHelp: function(help)
+    //{
+    //    cc.sys.localStorage.setItem(this.pfix+"help",help);
+    //},
+
+    isHelp: function(snakeId,level,callback)
+    {
+        cc.qianqista.datas(function(res){
+            console.log('my datas:', res);
+            if(res.state == 200)
+            {
+                var datas = JSON.parse(res.data);
+                var help = [];
+                if(datas.hasOwnProperty("help"))
+                {
+                    help = datas.help;
+                    if(typeof help != "object")
+                        help = JSON.parse(help);
+                    var b = false;
+                    for(var i=0;i<help.length;i++)
+                    {
+                        if(help[i].snakeId == snakeId && help[i].level == level)
+                        {
+                            b = true;
+                            break;
+                        }
+                    }
+                    if(callback)callback(b);
+                }
+                else
+                {
+                    if(callback)callback(false);
+                }
+            }
+            else
+            {
+                if(callback)callback(false);
+            }
+        });
+
+        //var help = this.getHelp();
+        //var b = false;
+        //for(var i=0;i<help.length;i++)
+        //{
+        //    if(help[i].snakeId == snakeId && help[i].level == level)
+        //    {
+        //        b = true;
+        //        break;
+        //    }
+        //}
+        //return b;
+    },
+
+    //getHelp: function()
+    //{
+    //    var help = cc.sys.localStorage.getItem(this.pfix+"help");
+    //    help = help ? help : "[]";
+    //    if(typeof help == "object")
+    //        return help;
+    //    return JSON.parse(help);
+    //},
+
+    uploadHelp: function(snakeId,level)
+    {
+        if(snakeId && level)
+        {
+            cc.qianqista.uploadHelpDatas(snakeId,level);
+        }
+    },
 
 
     setGameNum: function(num)
@@ -224,6 +346,19 @@ module.exports = {
         num = num ? num : 0;
         return Number(num);
     },
+
+
+    setTest: function(test)
+    {
+        cc.sys.localStorage.setItem(this.pfix+"test",test);
+    },
+    getTest: function()
+    {
+        var test = cc.sys.localStorage.getItem(this.pfix+"test");
+        test = test ? test : 0;
+        return Number(test);
+    },
+
 
 
     setMusic: function(music)

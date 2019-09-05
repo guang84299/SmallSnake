@@ -93,7 +93,7 @@ cc.Class({
                     canMove = true;
                 else
                 {
-                    var name = cc.config.game3TiledIds[tileGid-1].name;
+                    var name = cc.config.getTiledName(tileGid-1);
                     if(name == "key")
                     {
                         canMove = true;
@@ -115,9 +115,9 @@ cc.Class({
 
                 if(canMove)
                 {
-                    this.move(pos,tileGid);
-                    this.dir = dir;
+                    this.move(pos,tileGid,dir);
                     this.updateHeadDir(dir);
+                    this.dir = dir;
                 }
                 else
                 {
@@ -184,7 +184,7 @@ cc.Class({
         return false;
     },
 
-    move: function(pos,tileGid)
+    move: function(pos,tileGid,dir)
     {
         var self = this;
         var ac = cc.sequence(
@@ -204,7 +204,7 @@ cc.Class({
         body.active = true;
         this.node.addChild(body);
         this.bodys.unshift(body);
-        this.updateBodyDir(body);
+        this.updateBodyDir(body,dir);
 
         if(!this.isCanBoom)
         {
@@ -215,7 +215,7 @@ cc.Class({
 
         if(tileGid>0)
         {
-            var name = cc.config.game3TiledIds[tileGid-1].name;
+            var name = cc.config.getTiledName(tileGid-1);
             if(name == "coin")
             {
                 this.game.eatCoin(pos);
@@ -235,8 +235,9 @@ cc.Class({
                 boom.zIndex = this.head.zIndex+1;
                 boom.scale = this.tiledSize.width/80;
                 this.scheduleOnce(function(){
+                    self.isCanBoom = false;
                     self.game.gameWin();
-                },this.boomSpeed*this.bodys.length);
+                },this.boomSpeed);//*this.bodys.length
                 this.game.eatExit(pos);
             }
             else if(name == "key")
@@ -329,16 +330,32 @@ cc.Class({
         if(dir == "left") ang = 0;
         else if(dir == "top") ang = -90;
         else if(dir == "down") ang = 90;
+
         this.head.angle = ang;
+        //if(dir != this.dir)
+        //{
+        //    cc.res.setSpriteFrame("images/game3/head_"+dir,this.head);
+        //}
+
     },
 
-    updateBodyDir: function(body)
+    updateBodyDir: function(body,dir)
     {
         var ang = 180;
         if(this.dir == "left") ang = 0;
         else if(this.dir == "top") ang = -90;
         else if(this.dir == "down") ang = 90;
         body.angle = ang;
+
+        //if(dir == "left")
+        //    cc.res.setSpriteFrame("images/game3/body_d1",body);
+        //else if(dir == "right")
+        //    cc.res.setSpriteFrame("images/game3/body_d2",body);
+        //else if(dir == "top")
+        //    cc.res.setSpriteFrame("images/game3/body_c",body);
+        //else if(dir == "down")
+        //    cc.res.setSpriteFrame("images/game3/body_b",body);
+
     },
 
     update: function(dt) {

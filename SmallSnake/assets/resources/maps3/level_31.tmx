@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
+ <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
+  <image source="element.png" width="520" height="512"/>
+ </tileset>
+ <layer name="layer1" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJztUUEOwCAI4wXC/1+7HUZGmmqEePBAk8ZIWqgo0jgBS3K3ZxXjpX6ns+rP+pwG90yO6Mc6g+9V5c/N8q/8qGN5deLHOnu/Ed3Kn5k/QGNwMt1sXtxj3Ofu//nuY59G40Y8rL0Ezw==
+  </data>
+ </layer>
+ <layer name="layer2" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF3GRiZP24AAsWMV4s+nGZT4z92PzDBWXDaA4CetDtYoSKMZJgNzfUHmR7uXCow2UvIftNcehHB7j8j0s/TJxc+2Hi5PqfWvbjixtiwg+be9HFCcWfKVScGUqj+41Q2iU1vY+CUUAuAAAOXAb9
+  </data>
+ </layer>
+ <layer name="layer3" width="16" height="28">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo4B+QING+ok1l1L9pJpLbfspdSc5dtDDzlEwCgYCAABuGgG5
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="jiguang" x="420" y="296">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="jiguang" x="181.333" y="378.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="jiguang" x="425.333" y="462.667">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+  <object name="jiguang" x="181.333" y="542.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+  <object name="startPos" x="97.3333" y="218.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

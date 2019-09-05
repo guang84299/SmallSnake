@@ -26,7 +26,18 @@ cc.Class({
         this.initUI();
         this.updateUI();
 
-        sdk.showClub();
+        this.initEnd();
+
+        cc.qianqista.showcallback = this.initEnd;
+        //sdk.showClub();
+
+        //sdk.showBanner();
+
+        var test = storage.getTest();
+        if(test == 0 || test == 2)
+            res.openUI("test");
+        else
+            sdk.showBanner();
     },
 
 
@@ -58,6 +69,7 @@ cc.Class({
 
     updateUIControl: function()
     {
+        cc.GAME.helpLevel = 0;
         cc.GAME.skipgame = null;
         cc.GAME.share = false;
         cc.GAME.lixianswitch = false;
@@ -95,59 +107,35 @@ cc.Class({
                 {
                     cc.GAME.lixianswitch = con.value == 1 ? true : false;
                 }
+                else
+                {
+                    cc.GAME[con.id] = con.value;
+                }
             }
 
         }
-
         this.share_btn.active = cc.GAME.share;
     },
 
 
     initData: function()
     {
-        var now = new Date();
-        var login = new Date(storage.getLoginTime());
-        var update = false;
-        if(storage.getLoginTime() == 0 || now.getDate() != login.getDate() || now.getTime()-login.getTime()>24*60*60*1000)
-        {
-            storage.setLoginTime(now.getTime());
-            storage.setLoginDay(storage.getLoginDay()+1);
-            //更新车库数据
-            var loginDay = storage.getLoginDay();
-            if(loginDay >= 2)
-            {
 
-            }
-            if(loginDay >= 3)
-            {
-
-            }
-            if(loginDay >= 7)
-            {
-
-            }
-            update = true;
-        }
-
-
-        //if(update)
-        //{
-        //    this.uploadData();
-        //}
 
     },
 
     initUI: function()
     {
         this.node_main = cc.find("node_main",this.node);
-        this.node_display = cc.find("display",this.node);
+        this.display = cc.find("display",this.node);
 
         this.share_btn = cc.find("share",this.node_main);
         this.share_btn.active = false;
 
-        this.game1_num = cc.find("game1/num",this.node_main).getComponent(cc.Label);
-        this.game2_num = cc.find("game2/num",this.node_main).getComponent(cc.Label);
-        this.game3_num = cc.find("game3/num",this.node_main).getComponent(cc.Label);
+        this.display.active = false;
+
+        this.coin_num = cc.find("top/coinbg/num",this.node_main).getComponent(cc.Label);
+        this.score_num = cc.find("top/scorebg/num",this.node_main).getComponent(cc.Label);
         //if(sdk.is_iphonex())
         //{
         //    var topNode = cc.find("top",this.node_main);
@@ -164,14 +152,43 @@ cc.Class({
         //}
 
         this.updateUIControl();
+        this.updateHead();
+    },
+
+    initEnd: function()
+    {
+        if(qianqista.isUpdate && qianqista.channel == "game" && qianqista.fromid)
+        {
+            qianqista.isUpdate = false;
+            var snakeId = qianqista.queryData.snakeId;
+            var level = qianqista.queryData.level;
+
+            if(snakeId && level)
+            {
+                sdk.hideBanner();
+                cc.GAME.helpLevel = level;
+                cc.director.loadScene("game"+snakeId);
+            }
+
+        }
+    },
+
+    updateHead: function()
+    {
+        if(sdk.judgePower())
+        {
+            var head = cc.find("top/headbg/mask/head",this.node_main);
+            var name = cc.find("top/name",this.node_main).getComponent(cc.Label);
+
+            res.loadPic(qianqista.avatarUrl,head);
+            name.string = qianqista.userName;
+        }
     },
 
     updateUI: function()
     {
-        //this.node_coin.string = storage.castNum(storage.getCoin());
-        this.game1_num.string = "累计过关："+(storage.getLevel(1)-1);
-        this.game2_num.string = "累计过关："+(storage.getLevel(2)-1);
-        this.game3_num.string = "累计过关："+(storage.getLevel(3)-1);
+        this.coin_num.string = storage.getCoin();
+        this.score_num.string = storage.getScore();
     },
 
 
@@ -181,17 +198,17 @@ cc.Class({
         var self = this;
         if(data == "game1")
         {
-            sdk.hideClub();
+            sdk.hideBanner();
             cc.director.loadScene("game1");
         }
         else if(data == "game2")
         {
-            sdk.hideClub();
+            sdk.hideBanner();
             cc.director.loadScene("game2");
         }
         else if(data == "game3")
         {
-            sdk.hideClub();
+            sdk.hideBanner();
             cc.director.loadScene("game3");
         }
         else if(data == "setting")
@@ -209,6 +226,7 @@ cc.Class({
                     res.closeUI("power");
                     if(r){
                         res.showToast("成功获取权限！");
+                        self.updateHead();
                         cc.qianqista.event("授权_允许");
                     }
                     else
@@ -223,6 +241,14 @@ cc.Class({
         {
             sdk.share(null,"main");
             cc.qianqista.event("分享有礼_打开");
+        }
+        else if(data == "zhuanpan")
+        {
+            res.openUI("choujiang");
+        }
+        else if(data == "qiandao")
+        {
+            res.openUI("qiandao");
         }
         storage.playSound(res.audio_button);
         cc.log(data);

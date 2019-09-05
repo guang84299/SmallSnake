@@ -117,7 +117,7 @@ module.exports = {
         var self = this;
         if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
         {
-            this.rewardedVideoAd = wx.createRewardedVideoAd({ adUnitId:'adunit-f6ce7bed6d31d3b1'});
+            this.rewardedVideoAd = wx.createRewardedVideoAd({ adUnitId:'adunit-af6fe34f36bab058'});
             this.rewardedVideoAd.onLoad(function(){
                 console.log('激励视频 广告加载成功')
             });
@@ -138,7 +138,7 @@ module.exports = {
             this.rewardedVideoAd.onError(function(res){
                 if(self.videocallback)
                     self.videocallback(false);
-                cc.res.showToast("视频播放出错！"+JSON.stringify(res));
+                cc.res.showToast("视频播放失败！");//+JSON.stringify(res)
                 console.error(res);
             });
         }
@@ -182,11 +182,11 @@ module.exports = {
             var dpi = cc.winSize.width/s.width;
 
             this.bannerAd = wx.createBannerAd({
-                adUnitId: 'adunit-88c8808e01d07b2a',
+                adUnitId: 'adunit-100ed2aa9c7e0733',
                 style: {
                     left: 0,
                     top: s.height/dpi-300/3.5,
-                    width: s.width
+                    width: s.width*0.92
                 }
             });
             var bannerAd = this.bannerAd;
@@ -451,7 +451,7 @@ module.exports = {
                     cc.sdk.userInfo = res.userInfo;
                     cc.qianqista.login(true,res.userInfo);
                     wx.postMessage({ message: "loginSuccess",userInfo:res.userInfo });
-                    var score = storage.getLevel();
+                    var score = storage.getScore();
                     cc.sdk.uploadScore(score);
                     if(callback) callback(true);
                     //if(cc.sdk.main.quanxiansc)

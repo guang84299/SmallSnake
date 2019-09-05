@@ -5,46 +5,115 @@
  </tileset>
  <layer name="layer1" width="14" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFgw0wAjETEDNTwRxKzaAloJY/R8EoGGoAADzcABE=
+   eJxjYBgFo4B8wAjEzFjYtAYsdLJnFIwCWgAAKfAADQ==
   </data>
  </layer>
  <layer name="layer2" width="14" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFQwGwDLQD8IDB7LZRMAoGIwAAIYgACQ==
+   eJxjYBgFo4CBgYUAfxSMglFAPQAAILgACQ==
   </data>
  </layer>
  <layer name="layer3" width="14" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBgF9AQsA+2AUTAKRsGAAwAVmAAF
+   eJxjYBgFwwmwEOCPglEwCgYeAAAieAAJ
   </data>
  </layer>
  <layer name="layer4" width="14" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBgF5ABGIGYCYuaBdsgoGAWjYMgBAB7YAAc=
-  </data>
- </layer>
- <layer name="layer5" width="14" height="25">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgFIMAy0A4YBaNgFIwYAAAXOAAF
-  </data>
- </layer>
- <layer name="layer6" width="14" height="25">
-  <data encoding="base64" compression="zlib">
-   eJxjYBhegGWgHTAKRsEoGAUEAAAYGAAF
-  </data>
- </layer>
- <layer name="layer7" width="14" height="25">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgcgBGImZAw88A6ZxSMglEwCmgGADZ4AAs=
+   eJxjYBgFgxEwAjETEmYeWOeMglEwCqgIACvYAAs=
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos1" x="161.333" y="253"/>
-  <object name="startPos2" x="114.667" y="252.667"/>
-  <object name="startPos3" x="115.333" y="298.667"/>
-  <object name="stone" x="160.333" y="298.667"/>
-  <object name="apple" x="345" y="252.333"/>
-  <object name="stone" x="390.667" y="205.667"/>
-  <object name="exit" x="528.667" y="436.333"/>
+  <object name="startPos1" x="298.667" y="530"/>
+  <object name="startPos2" x="250.667" y="530"/>
+  <object name="startPos3" x="249.333" y="576.667"/>
+  <object name="apple" x="297.333" y="390"/>
+  <object name="exit" x="298.667" y="622"/>
+ </objectgroup>
+ <objectgroup name="tipsLayer">
+  <object name="1" x="299" y="487">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="2" x="298" y="435">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="3" x="257" y="438">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="4" x="258" y="395">
+   <properties>
+    <property name="dir" value="up"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="5" x="297" y="390">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="6" x="342" y="390">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="7" x="341" y="432">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="8" x="294" y="432">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="9" x="297" y="487">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="10" x="303" y="532">
+   <properties>
+    <property name="dir" value="down"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="11" x="346" y="532">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="12" x="345" y="577">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="13" x="344" y="619">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object name="14" x="306" y="619">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+   <ellipse/>
+  </object>
  </objectgroup>
 </map>

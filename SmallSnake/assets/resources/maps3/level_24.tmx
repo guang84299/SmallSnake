@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
- <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
-  <image source="element.png" width="520" height="40"/>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="20" tilewidth="55" tileheight="55">
+ <tileset firstgid="1" name="element2" tilewidth="55" tileheight="55">
+  <image source="element2.png" width="715" height="715"/>
  </tileset>
- <layer name="layer" width="16" height="28">
+ <layer name="layer1" width="14" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo4A6gBsLJlU/BxImVj8u+7C5B5taXPYwErATmc2DxRyYfi40TI5+digmRT+MT4z9vFj04wPo+snBo2AUDDQAAK/nAsQ=
+   eJxjYBhYIIAFk2sOser4sNjJT6Q+ZL38ROpDtpOfgTh/CiDRpIQLup8IuQ8G0P1Fjn3kuJOPDPtg8UCq/9D9OApoDwC7AwOy
+  </data>
+ </layer>
+ <layer name="layer2" width="14" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAccOPBhPTxArEpEoaJk2ofujgufbgAxyDUB6IZkTC5/iMmPEGACwmTqo+dzvrIcSex4sjy5KTrUYAAAGYHAz8=
+  </data>
+ </layer>
+ <layer name="layer3" width="14" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAe0EDCo2AUjIJRAADr7wB5
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos" x="538.667" y="502.667">
+  <object name="startPos" x="248.333" y="737">
    <properties>
-    <property name="dir" value="down"/>
+    <property name="dir" value="up"/>
    </properties>
   </object>
-  <object name="jiguang" x="178.667" y="418.667">
+  <object name="jiguang" x="579" y="245">
    <properties>
-    <property name="dir" value="down"/>
+    <property name="dir" value="left"/>
    </properties>
-   <ellipse/>
   </object>
-  <object name="jiguang" x="216" y="417.333">
+  <object name="jiguang" x="579" y="295.667">
    <properties>
-    <property name="dir" value="down"/>
+    <property name="dir" value="left"/>
    </properties>
-   <ellipse/>
   </object>
-  <object name="jiguang" x="258.667" y="417.333">
+  <object name="jiguang" x="577.667" y="353">
    <properties>
-    <property name="dir" value="down"/>
+    <property name="dir" value="left"/>
    </properties>
-   <ellipse/>
   </object>
  </objectgroup>
 </map>

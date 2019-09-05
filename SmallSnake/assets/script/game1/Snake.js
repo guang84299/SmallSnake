@@ -30,6 +30,12 @@ cc.Class({
         this.tail = cc.find("tail",this.node);
         this.body = cc.find("body",this.node);
 
+        cc.res.setSpriteFrame("images/game1/head",this.head);
+
+        this.head.zIndex = 3;
+        this.tail.zIndex = 3;
+        this.body.zIndex = 1;
+
 
         if(this.bodys && this.bodys.length>0)
         {
@@ -46,6 +52,9 @@ cc.Class({
         this.body.stopAllActions();
         this.tail.stopAllActions();
         this.dropNum = 1;
+
+        this.isPass = false;
+        this.isOver = false;
     },
 
     initPos: function(pos1,pos2,pos3)
@@ -90,6 +99,7 @@ cc.Class({
             this.tail.dir = "top";
 
         this.body.ldir = this.tail.dir;
+        this.body.dir = this.head.dir;
 
         this.updateDir(this.head.dir,true);
     },
@@ -132,7 +142,7 @@ cc.Class({
 
     judgeMove: function(dir)
     {
-        if(!this.isMoving)
+        if(!this.isMoving && !this.isPass && !this.isOver)
         {
             this.isMoving = true;
             var b = this.judgePassBody(dir);
@@ -336,13 +346,14 @@ cc.Class({
         }
     },
 
-    judgeTrap: function()
+    judgeTrap: function(toPos)
     {
         var min = Math.min(this.moveSize.width,this.moveSize.height)/2;
         var b = true;
         for(var i=0;i<this.game.traps.length;i++)
         {
             var pos = this.head.position;
+            if(toPos) pos = toPos;
             var dis = this.game.traps[i].position.sub(pos).mag();
             b = dis<min ? false : true;
             if(!b) break;
@@ -559,14 +570,14 @@ cc.Class({
         return false;
     },
 
-    judgeEat: function()
+    judgeEat: function(pos)
     {
-        var pos = this.head.position;
+        //var pos = this.head.position;
         var min = Math.min(this.moveSize.width,this.moveSize.height)/2;
         for(var i=0;i<this.game.apples.length;i++)
         {
             var dis = this.game.apples[i].position.sub(pos).mag();
-            if(dis<min)
+            if(dis<min*2.2)
                 return true;
         }
         return false;
@@ -631,11 +642,17 @@ cc.Class({
         }
     },
 
-    judgeWin: function(pos)
+    judgeWin: function(pos,dir)
     {
-        if(this.judgeTrap())
+        if(this.judgeTrap(pos))
         {
-            this.game.willGameOver();
+            this.isOver = true;
+            cc.res.setSpriteFrame("images/game1/head_tarp",this.head);
+            this.scheduleOnce(function(){
+                //this.game.willGameOver();
+                this.game.playReplayAni();
+            },0.5);
+
         }
         else
         {
@@ -645,11 +662,11 @@ cc.Class({
             if(dis<min)
             {
                 this.isMoving = true;
-                this.head.opacity = 0;
-                this.scheduleOnce(function(){
-                    this.pass();
-                },0.2);
-
+                //this.head.opacity = 0;
+                //this.scheduleOnce(function(){
+                //    this.willpass();
+                //},0.2);
+                this.willpass(pos,dir);
                 return true;
             }
 
@@ -680,26 +697,47 @@ cc.Class({
 
         var toPos = pos.add(addPos);
 
-        var mTime = 0.1;
-        var ac = cc.moveTo(mTime,toPos);
-        this.head.runAction(ac);
-        for(var i=0;i<this.bodys.length;i++)
+        if(this.judgeEat(toPos))
+            cc.res.setSpriteFrame("images/game1/head_apple",this.head);
+        else
+            cc.res.setSpriteFrame("images/game1/head",this.head);
+
+        var iswin = this.judgeWin(toPos,dir);
+
+        if(!iswin)
         {
-            var ac2 = cc.moveTo(mTime,pos);
-            if(i != 0)
-                ac2 = cc.moveTo(mTime,this.bodys[i-1].position);
-            this.bodys[i].runAction(ac2);
+            var mTime = 0.1;
+
+            var toPos2 = toPos.sub(pos).mul(0.5).add(pos);
+            var ac = cc.sequence(
+                cc.moveTo(0,toPos2),
+                cc.moveTo(mTime,toPos)
+            );
+            this.head.runAction(ac);
+            for(var i=0;i<this.bodys.length;i++)
+            {
+                var ac2 = cc.moveTo(0,pos);
+                if(i != 0)
+                    ac2 = cc.moveTo(0,this.bodys[i-1].position);
+                this.bodys[i].runAction(ac2);
+            }
+            if(!isEat)
+            {
+                var tp = this.bodys[this.bodys.length-1].position;
+                var tp2 = tp.sub(this.tail.position).mul(0.9).add(this.tail.position);
+                var ac3 = cc.sequence(
+                    cc.moveTo(mTime,tp2),
+                    cc.moveTo(0,tp)
+                );
+                this.tail.runAction(ac3);
+            }
+            this.updateDir(dir);
         }
-        if(!isEat)
-        {
-            var ac3 = cc.moveTo(mTime,this.bodys[this.bodys.length-1].position);
-            this.tail.runAction(ac3);
-        }
-        this.updateDir(dir);
+
 
         this.isMoving = true;
         this.dropNum = 1;
-        var iswin = this.judgeWin(toPos);
+
         var self = this;
         this.scheduleOnce(function(){
             self.isMoving = false;
@@ -791,68 +829,65 @@ cc.Class({
         cc.log("drop");
     },
 
-    pass: function()
+    willpass: function(pos,dir)
     {
-        var self = this;
-        var pos = this.head.position;
-        var mTime = 0.2;
+        this.node.parent = this.game.exit_mask;
+        this.head.position = this.head.position.sub(this.game.exit.position);
+        this.head.stopAllActions();
         for(var i=0;i<this.bodys.length;i++)
         {
-            var ac2 = cc.moveTo(mTime,pos);
+            this.bodys[i].position = this.bodys[i].position.sub(this.game.exit.position);
+            this.bodys[i].stopAllActions();
+        }
+        this.tail.position = this.tail.position.sub(this.game.exit.position);
+        this.tail.stopAllActions();
+        this.passPos = pos.sub(this.game.exit.position);
+        this.head.dir = dir;
+        this.pass();
+    },
+
+    pass: function()
+    {
+        var dir = this.head.dir;
+        var pos = this.head.position;
+        this.updateDir(dir);
+
+        //var addPos = cc.v2(0,0);
+        //if(dir == "top") addPos = cc.v2(0,this.moveSize.height);
+        //else if(dir == "bottom") addPos = cc.v2(0,-this.moveSize.height);
+        //else if(dir == "left") addPos = cc.v2(-this.moveSize.width,0);
+        //else if(dir == "right") addPos = cc.v2(this.moveSize.width,0);
+        //
+        //var toPos = pos.add(addPos);
+
+        var mTime = 0.1;
+        var ac = cc.moveTo(mTime, this.passPos);
+        this.head.runAction(ac);
+        for(var i=0;i<this.bodys.length;i++)
+        {
+            var ac2 = cc.moveTo(0,pos);
             if(i != 0)
+                ac2 = cc.moveTo(0,this.bodys[i-1].position);
+            this.bodys[i].runAction(ac2);
+        }
+        var ac3 = cc.moveTo(mTime,this.bodys[this.bodys.length-1].position);
+        this.tail.runAction(ac3);
+
+
+        var self = this;
+
+        this.scheduleOnce(function(){
+            if(self.tail.position.sub(self.passPos).mag()> 10)
             {
-                ac2 = cc.moveTo(mTime,this.bodys[i-1].position);
+                self.pass();
             }
             else
             {
-                ac2 = cc.sequence(
-                    cc.spawn(
-                        cc.moveTo(mTime,pos),
-                        cc.fadeOut(mTime)
-                    ),
-                    cc.callFunc(function(){
-                        if(self.bodys.length>0)
-                        {
-                            if(self.bodys[0] != self.body)
-                            {
-                                self.bodys[0].destroy();
-                            }
-                        }
-
-                    })
-                );
+                self.node.parent = self.game.node_game;
+                self.game.gameWin();
+                self.isMoving = false;
             }
-            this.bodys[i].runAction(ac2);
-        }
-
-        if(this.bodys.length>0)
-        {
-            self.updateDir(self.bodys[0].dir);
-            var ac3 = cc.moveTo(mTime,this.bodys[this.bodys.length-1].position);
-            self.bodys.splice(0,1);
-            this.tail.runAction(cc.sequence(
-                ac3,
-                cc.callFunc(function(){
-                    self.pass();
-                })
-            ));
-        }
-        else
-        {
-
-            var ac3 = cc.sequence(
-                cc.spawn(
-                    cc.moveTo(mTime,pos),
-                    cc.fadeOut(mTime)
-                ),
-                cc.callFunc(function(){
-                    self.game.gameWin();
-                    self.isMoving = false;
-                })
-            );
-
-            this.tail.runAction(ac3);
-        }
+        },mTime);
     },
 
     updateDir: function(dir,isInit)
@@ -904,15 +939,28 @@ cc.Class({
             var body = this.bodys[i];
             var dir1 = "";
             if(i==0)
+            {
                 dir1 = this.head.dir;
+            }
             else
+            {
                 dir1 = this.bodys[i-1].ldir;
+            }
             var dir2 = body.ldir;
-            cc.log(dir1,dir2);
+            //cc.log(dir1,dir2,this.tail.dir);
 
             if(dir1 == dir2)
             {
-                body.getComponent("cc.Sprite").spriteFrame = this.bodySp;
+                if(!isInit)
+                {
+                    this.updateSp(body);
+                    if(i==this.bodys.length-1)
+                    {
+                        //this.updateSp(body);
+                    }
+                }
+
+
                 if(dir2 == "top")
                 {
                     body.angle = 90;
@@ -929,10 +977,11 @@ cc.Class({
                 {
                     body.angle = 0;
                 }
+
+                body.getComponent("cc.Sprite").spriteFrame = this.bodySp;
             }
             else
             {
-                body.angle = 0;
                 var b = this.isLeftRotate(dir1,dir2);
                 var index = 0;
                 if(dir1 == "top")
@@ -963,32 +1012,84 @@ cc.Class({
                     else if(dir2 == "bottom")
                         index = 1;
                 }
+                var spf = null;
                 if(b)
-                    body.getComponent("cc.Sprite").spriteFrame = this.bodySp2[index-1];
+                    spf = this.bodySp2[index-1];
                 else
-                    body.getComponent("cc.Sprite").spriteFrame = this.bodySp1[index-1];
+                {
+                    spf = this.bodySp1[index-1];
+                    //if(index == 4)
+                    //{
+                    //    var node = cc.res.playAnim("images/game1/body_4ani",5,0.01,1,null,true);
+                    //    node.scale = 46/58;
+                    //    body.addChild(node);
+                    //}
+                }
+
+                if(!isInit)
+                {
+                    this.updateSp(body);
+                    if(i==this.bodys.length-1)
+                    {
+                        //this.updateSp(body,true);
+                    }
+                }
+
+                body.angle = 0;
+                body.getComponent("cc.Sprite").spriteFrame = spf;
+
             }
+
+
 
         }
 
         //蛇尾
         dir = this.tail.dir;
+        var tailAng = 0;
         if(dir == "top")
         {
-            this.tail.angle = 90;
+            //this.tail.angle = 90;
+            tailAng = 90;
         }
         else if(dir == "bottom")
         {
-            this.tail.angle = -90;
+            //this.tail.angle = -90;
+            tailAng = -90;
         }
         else if(dir == "left")
         {
-            this.tail.angle = 180;
+            //this.tail.angle = 180;
+            tailAng = 180;
         }
         else if(dir == "right")
         {
-            this.tail.angle = 0;
+            //this.tail.angle = 0;
         }
+        this.tail.runAction(cc.sequence(
+            cc.delayTime(0.1),
+            cc.rotateTo(0,tailAng)
+        ));
+    },
+
+    updateSp: function(body,isTail)
+    {
+        var body2 = cc.instantiate(body);
+        if(isTail)
+        {
+            body2.scale = 0.9;
+        }
+        //body2.getComponent("cc.Sprite").spriteFrame = spf;
+        //body2.opacity=0;
+        //cc.res.setSpriteFrame("images/game1/body_c",body2);
+        body2.position = body.position;
+        body2.parent = body.parent;
+        body2.zIndex = 2;
+        body2.runAction(cc.sequence(
+            cc.delayTime(0.1),
+            cc.removeSelf()
+        ));
+
     },
 
     isLeftRotate: function(dir1,dir2)

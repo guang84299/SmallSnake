@@ -161,7 +161,7 @@ module.exports = {
 
     showToast: function(str)
     {
-        var toast = cc.instantiate(this.ptoast);
+        var toast = cc.instantiate(this.toast);
         cc.find("label",toast).getComponent("cc.Label").string = str;
         cc.find("Canvas").addChild(toast,10000);
         toast.opacity = 0;

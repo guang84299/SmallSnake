@@ -1,30 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="16" height="28" tilewidth="40" tileheight="40">
- <tileset firstgid="1" name="element" tilewidth="40" tileheight="40">
-  <image source="element.png" width="520" height="40"/>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="20" tilewidth="55" tileheight="55">
+ <tileset firstgid="1" name="element2" tilewidth="55" tileheight="55">
+  <image source="element2.png" width="715" height="715"/>
  </tileset>
- <layer name="layer" width="16" height="28">
+ <layer name="layer1" width="12" height="20">
   <data encoding="base64" compression="zlib">
-   eJztkksKwCAMRNNda+P9r1uECMMgkmShXTgwIJGXD4nI0Z/0gjNM8z2IzfK2WHXU0Qmf7TUzazHjvKjL/llq8Yd4rl8sx4jn+iL+/jvPdaPze2KrebW3giM8mnfjvZXO4n4jwt1m+exdH+3RB9AfA94=
+   eJxjYBh8QIBITG31fESo50dj8yGJoatHN48PTT+yen4G7G7CpR4mh00fPvdgU8+HQz02NyD7CV94YrNnFFAfAADp7wYn
+  </data>
+ </layer>
+ <layer name="layer2" width="12" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAt4EbDHFjE0DEvEeaaIqkn1S2kqOdAE2MEYi4SzOeC6kEHpLqf1uoZKFBvimavKZoYunpS8CjADwC00QOq
+  </data>
+ </layer>
+ <layer name="layer3" width="12" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgcQGOgHUAhINX9tFZPCdBAY2swDP34Ga4AAJpeAUE=
   </data>
  </layer>
  <objectgroup name="objLayer">
-  <object name="startPos" x="458.667" y="701.333">
+  <object name="startPos" x="573.333" y="687.667">
    <properties>
     <property name="dir" value="up"/>
    </properties>
   </object>
-  <object name="jiguang" x="60" y="457.333">
-   <properties>
-    <property name="dir" value="right"/>
-   </properties>
-   <ellipse/>
-  </object>
-  <object name="jiguang" x="220" y="298.667">
+  <object name="jiguang" x="252" y="137">
    <properties>
     <property name="dir" value="down"/>
    </properties>
-   <ellipse/>
+  </object>
+  <object name="jiguang" x="21.3333" y="355.667">
+   <properties>
+    <property name="dir" value="right"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

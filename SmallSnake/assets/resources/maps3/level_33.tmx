@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="12" height="20" tilewidth="55" tileheight="55">
+ <tileset firstgid="1" name="element2" tilewidth="55" tileheight="55">
+  <image source="element2.png" width="715" height="715"/>
+ </tileset>
+ <layer name="layer1" width="12" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgeQIAM9bjwqHr86kkN61FAOwAA8xoDMQ==
+  </data>
+ </layer>
+ <layer name="layer2" width="12" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBh8gBsJE6ueF00fOkZXb4oH41LPiIMeDuZzY1GPCzNgUU8MHgXUBwChAwnr
+  </data>
+ </layer>
+ <layer name="layer3" width="12" height="20">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgeQAMPxqUeHz3SzR8FQwMAAMOSBkE=
+  </data>
+ </layer>
+ <objectgroup name="objLayer">
+  <object name="startPos" x="521.333" y="630">
+   <properties>
+    <property name="dir" value="left"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

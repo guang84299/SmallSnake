@@ -50,6 +50,9 @@ cc.Class({
 
         this.purls = [
             //"audio/button",
+            "conf/tips",
+            "conf/pilot",
+            "conf/test",
             "prefab/game1/apple",
             "prefab/game1/stone",
             "prefab/game1/trap",
@@ -61,6 +64,13 @@ cc.Class({
             "prefab/game3/emitterAni",
 
             "prefab/ui/jiesuan",
+            "prefab/ui/choujiang",
+            "prefab/ui/qiandao",
+            "prefab/ui/rank",
+            "prefab/ui/power",
+            "prefab/ui/help",
+            "prefab/ui/test",
+            "prefab/ui/toast",
             //
             //"prefab/particle/suijinbi",
             "scene/game1"
@@ -88,11 +98,11 @@ cc.Class({
 
         var self = this;
         qianqista.init("wx0444b5396e3d18ba","d0c3b794e0680ff86984c9076b73c89a","我的蛇啊",function(){
-            var score = storage.getLevel();
+            var score = storage.getScore();
             sdk.uploadScore(score,self.initNet.bind(self));
         });
         sdk.getUserInfo();
-        //sdk.videoLoad();
+        sdk.videoLoad();
         sdk.closeRank();
 
 
@@ -106,7 +116,7 @@ cc.Class({
             storage.setMusic(1);
             storage.setSound(1);
             storage.setVibrate(1);
-            storage.setCoin(500);
+            storage.setCoin(0);
         }
     },
 
@@ -144,7 +154,8 @@ cc.Class({
 
         this.setRes(resource,index);
 
-        this.progressCar.x = this.progress*300-150;
+        this.progressCar.x = this.progress*520-260+20;
+        this.progressCar.angle -= 4;
         //cc.log(resource);
     },
     completeCallback: function (error, resource) {
@@ -185,7 +196,19 @@ cc.Class({
             pifx = "game2_";
         else if(url.indexOf("maps3/") != -1)
             pifx = "game3_";
-        res[pifx+resource.name] = resource;
+        else if(url.indexOf("conf/") != -1)
+        {
+            pifx = "conf_"+resource.name;
+            //console.error(url,cc.url.raw("resources/"+url));
+            resource = JSON.parse(resource.text);
+        }
+
+        if(url.indexOf("conf/") != -1)
+            res[pifx] = resource;
+        else
+            res[pifx+resource.name] = resource;
+
+        //cc.log(res);
     },
 
     initNet: function()
@@ -236,6 +259,8 @@ cc.Class({
                 storage.setFirst(1);
             if(datas.hasOwnProperty("coin"))
                 storage.setCoin(Number(datas.coin));
+            if(datas.hasOwnProperty("score"))
+                storage.setScore(Number(datas.score));
             if(datas.hasOwnProperty("level_1"))
                 storage.setLevel(1,Number(datas.level_1));
             if(datas.hasOwnProperty("level_2"))
@@ -244,8 +269,8 @@ cc.Class({
                 storage.setLevel(3,Number(datas.level_3));
 
 
-            if(datas.hasOwnProperty("login_time"))
-                storage.setLoginTime(Number(datas.login_time));
+            //if(datas.hasOwnProperty("login_time"))
+            //    storage.setLoginTime(Number(datas.login_time));
             if(datas.hasOwnProperty("login_day"))
                 storage.setLoginDay(Number(datas.login_day));
             if(datas.hasOwnProperty("game_num"))
@@ -259,9 +284,27 @@ cc.Class({
 
 
             console.log("datas:",datas);
+
+            var now = new Date().getTime();
+            if(datas.hasOwnProperty("login_time"))
+                cc.login_time = Number(datas.login_time);
+            else
+                cc.login_time = now;
+            storage.setLoginTime(now);
+            storage.uploadLoginTime();
+
+            if(res.isRestTime(cc.login_time,now))
+            {
+                storage.setLoginDay(parseInt(datas.login_day)+1);
+                storage.uploadLoginDay();
+            }
         }
         else
         {
+            var now = new Date().getTime();
+            cc.login_time = now;
+            storage.setLoginTime(now);
+            storage.setLoginDay(1);
             this.uploadData();
         }
     },

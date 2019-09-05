@@ -18,10 +18,15 @@ cc.Class({
     onLoad: function() {
         cc.myscene = "game3";
         this.level = storage.getLevel(3);
+        if(cc.GAME.helpLevel>0)
+            this.level = cc.GAME.helpLevel;
+        cc.qianqista.showcallback = this.initEnd;
         this.initData();
         this.initUI();
         this.addListener();
         this.yindao = storage.getYinDao();
+
+
     },
 
 
@@ -29,6 +34,41 @@ cc.Class({
     {
         this.state = "stop";
         this.coin = 0;
+        this.eatCoinNum = 0;
+
+        this.updateHelp();
+    },
+
+    initEnd: function()
+    {
+        if(cc.qianqista.isUpdate && cc.qianqista.channel == "game" && cc.qianqista.fromid)
+        {
+            cc. qianqista.isUpdate = false;
+            var snakeId = cc.qianqista.queryData.snakeId;
+            var level = cc.qianqista.queryData.level;
+
+            if(snakeId && level)
+            {
+                cc.GAME.helpLevel = level;
+                cc.director.loadScene("game"+snakeId);
+            }
+
+        }
+    },
+
+    updateHelp: function()
+    {
+        if(cc.GAME.helpLevel==0 && !this.isHasHelp)
+        {
+            var self = this;
+            storage.isHelp(3,this.level,function(r){
+                if(r)
+                {
+                    res.setSpriteFrame("images/common/btn_ask",self.btn_share);
+                    self.isHasHelp = true;
+                }
+            });
+        }
     },
 
 
@@ -36,7 +76,11 @@ cc.Class({
     {
         this.node_game = cc.find("Canvas/node_game");
         this.node_ui = cc.find("Canvas/node_ui");
-        this.node_level = cc.find("level/num",this.node_ui).getComponent(cc.Label);
+        this.node_top = cc.find("Canvas/node_top");
+        this.node_level = cc.find("lvbg/num",this.node_top).getComponent(cc.Label);
+        this.coin_num = cc.find("coinbg/num",this.node_top).getComponent(cc.Label);
+        this.score_num = cc.find("scorebg/num",this.node_top).getComponent(cc.Label);
+
         this.maps = cc.find("maps",this.node_game);
         this.rocker = cc.find("rocker",this.node_ui);
         this.rocker_ball = cc.find("ball",this.rocker);
@@ -49,24 +93,27 @@ cc.Class({
         this.virkey_right = cc.find("right",this.virkey);
 
         this.virkeys = [this.virkey_up,this.virkey_down,this.virkey_left,this.virkey_right];
+
+        this.btn_share = cc.find("share",this.node_ui);
+        this.btn_tishi = cc.find("tishi",this.node_ui);
         this.initMap();
-        //if(cc.sdk.is_iphonex())
-        //{
-        //    var topNode = cc.find("top",this.node_ui);
-        //    var pro = cc.find("pro",this.node_ui);
-        //    topNode.runAction(cc.sequence(
-        //        cc.delayTime(0.1),
-        //        cc.callFunc(function(){
-        //            var s = cc.view.getFrameSize();
-        //            var dpi = cc.winSize.width/s.width;
-        //            topNode.y -= dpi*30;
-        //            pro.y -= dpi*15;
-        //        })
-        //    ));
-        //}
+        if(cc.sdk.is_iphonex())
+        {
+            var topNode = this.node_top;
+            topNode.runAction(cc.sequence(
+                cc.delayTime(0.1),
+                cc.callFunc(function(){
+                    var s = cc.view.getFrameSize();
+                    var dpi = cc.winSize.width/s.width;
+                    topNode.y -= dpi*30;
+                })
+            ));
+        }
 
         this.updateUI();
         this.startGame();
+
+        this.updateTishiAd();
     },
 
     initMap: function()
@@ -90,14 +137,28 @@ cc.Class({
     updateUI: function()
     {
         this.node_level.string = this.level+"";
+        this.coin_num.string = storage.getCoin();
+        this.score_num.string = storage.getScore();
         //this.coinnum.string = storage.castNum(storage.getCoin());
     },
 
     addCoin: function(num)
     {
+        num = 10;
         this.coin += num;
-        //storage.setCoin(storage.getCoin()+num);
+        storage.setCoin(storage.getCoin()+num);
+        this.eatCoinNum ++;
         //this.updateUI();
+    },
+
+    getStar: function()
+    {
+        var pre = this.eatCoinNum/this.coinNum;
+        var star = 3;
+        var data = cc.config.gameAwards[2];
+        if(pre<=data.bad) star = 1;
+        else if(pre<=data.fine) star = 2;
+        return star;
     },
 
     initSnake: function()
@@ -105,7 +166,8 @@ cc.Class({
         this.tiledMap = this.tmx.getComponent(cc.TiledMap);
         this.tiledSize = this.tiledMap.getTileSize();
         this.mapSize = this.tiledMap.getMapSize();
-        this.layer = this.tiledMap.getLayer("layer").getComponent(cc.TiledLayer);
+        this.layer = this.tiledMap.getLayer("layer2").getComponent(cc.TiledLayer);
+        this.layer3 = this.tiledMap.getLayer("layer3").getComponent(cc.TiledLayer);
 
         var subp = cc.v2(this.mapSize.width*this.tiledSize.width/2,
             this.mapSize.height*this.tiledSize.height/2);
@@ -143,6 +205,72 @@ cc.Class({
         }
 
         this.updateEmitter();
+
+
+        //获取金币个数
+        this.coinNum = 0;
+        var coinId = config.getTiledId("coin");
+        for(var i=0;i<this.mapSize.width;i++)
+        {
+            for(var j=0;j<this.mapSize.height;j++)
+            {
+                var tileGid = this.layer.getTileGIDAt(i,j);
+                if(coinId == tileGid)
+                {
+                    this.coinNum++;
+                }
+            }
+        }
+
+        //this.updatevirkey();
+    },
+
+    updatevirkey: function()
+    {
+        var maxGid = 0;
+        var n = Math.floor(this.mapSize.height/2) + 1;
+        for(var j=n;j<this.mapSize.height;j++)
+        {
+            var b = false;
+            for(var i=0;i<this.mapSize.width;i++)
+            {
+                var tileGid = this.layer.getTileGIDAt(i,j);
+                if(tileGid>0)
+                {
+                    b = true;
+                    cc.log(i,tileGid);
+                    break;
+                }
+            }
+            if(!b)
+            {
+                maxGid = j;
+                break;
+            }
+        }
+        if(maxGid*this.tiledSize.height<900)
+        {
+            cc.find("virkey2",this.node_ui).active = false;
+
+            this.virkey = cc.find("virkey",this.node_ui);
+            this.virkey_up = cc.find("top",this.virkey);
+            this.virkey_down = cc.find("down",this.virkey);
+            this.virkey_left = cc.find("left",this.virkey);
+            this.virkey_right = cc.find("right",this.virkey);
+            this.virkey.active = true;
+            this.virkeys = [this.virkey_up,this.virkey_down,this.virkey_left,this.virkey_right];
+        }
+        else
+        {
+            cc.find("virkey",this.node_ui).active = false;
+            this.virkey = cc.find("virkey2",this.node_ui);
+            this.virkey_up = cc.find("top",this.virkey);
+            this.virkey_down = cc.find("down",this.virkey);
+            this.virkey_left = cc.find("left",this.virkey);
+            this.virkey_right = cc.find("right",this.virkey);
+            this.virkey.active = true;
+            this.virkeys = [this.virkey_up,this.virkey_down,this.virkey_left,this.virkey_right];
+        }
     },
 
     startGame: function()
@@ -158,6 +286,11 @@ cc.Class({
         this.node.stopAllActions();
 
         cc.qianqista.event("爆炸蛇关卡_"+this.level);
+
+        if(this.level<=9)
+        {
+            res.openUI("help",null,res.conf_pilot[this.level-1].text);
+        }
     },
 
     converToRoadPos: function(pos)
@@ -176,10 +309,14 @@ cc.Class({
         this.state = "stop";
         this.rocker.active = false;
         this.dir = "";
-        this.level+=1;
-        storage.setLevel(3,this.level);
+        if(cc.GAME.helpLevel==0)
+        {
+            this.level+=1;
+            storage.setLevel(3,this.level);
+        }
 
-        res.openUI("jiesuan");
+
+        res.openUI("jiesuan",null,"win");
     },
 
     nextLevel: function()
@@ -229,7 +366,7 @@ cc.Class({
     gameOver: function()
     {
 
-        //res.openUI("jiesuan",null,"fail");
+        res.openUI("jiesuan",null,"fail");
 
 
         //storage.playMusic(res.audio_bgm);
@@ -249,6 +386,8 @@ cc.Class({
         var x = Math.floor(p.x/this.tiledSize.width);
         var y = this.mapSize.height - Math.floor(p.y/this.tiledSize.height) - 1;
 
+        if(x>=this.mapSize.width || x < 0 || y < 0 || y>=this.mapSize.height)
+            return 0;
         var tileGid =  this.layer.getTileGIDAt(x,y);
         return tileGid;
     },
@@ -269,10 +408,19 @@ cc.Class({
         return this.layer.getTiledTileAt(p.x, p.y,true);
     },
 
+    getTiled3: function(pos)
+    {
+        var p = this.getTiledPos(pos);
+        return this.layer3.getTiledTileAt(p.x, p.y,true);
+    },
+
     eatCoin: function(pos)
     {
         var tiled = this.getTiled(pos);
         tiled.gid = 0;
+
+        var tiled2 = this.getTiled3(pos.add(cc.v2(0,this.tiledSize.height)));
+        tiled2.gid = 0;
         //tiled.node.position = pos.add(cc.v2(-this.tiledSize.width/2,-this.tiledSize.height/2));
         //tiled.node.runAction(cc.scaleTo(0.5,0));
         //cc.log(tiled.node);
@@ -313,7 +461,7 @@ cc.Class({
         var gid = this.getTiledGid(p);
         if(gid>0)
         {
-            var name = config.game3TiledIds[gid-1].name;
+            var name = config.getTiledName(gid-1);
             if(name == "brick")
             {
                 var tiled = this.getTiled(p);
@@ -339,6 +487,10 @@ cc.Class({
             {
                 var tiled = this.getTiled(p);
                 tiled.gid = 0;
+
+                var tiled2 = this.getTiled3(p.add(cc.v2(0,this.tiledSize.height)));
+                tiled2.gid = 0;
+
                 this.tntBoom(p);
 
                 var boom = res.playAnim("images/game3/tailboom",16,0.05,1,null,true);
@@ -651,6 +803,12 @@ cc.Class({
 
     },
 
+    showTips: function()
+    {
+        //res.showToast(res.conf_tips[this.level-1].text);
+        res.openUI("help",null,res.conf_tips[this.level-1].text);
+    },
+
 
     touchStart: function(event)
     {
@@ -661,7 +819,7 @@ cc.Class({
             //this.rocker.active = true;
             //this.rocker.position = p;
             //this.rocker_ball.position = cc.v2(0,0);
-            //this.lastPoint = pos;
+            this.lastPoint = pos;
             this.dir = "";
 
 
@@ -673,6 +831,8 @@ cc.Class({
                 {
                     this.dir = key.name;
                     key.scale = 0.9;
+
+                    cc.sdk.vibrate();
                     break;
                 }
             }
@@ -680,19 +840,19 @@ cc.Class({
     },
     touchMove: function(event)
     {
-        if(this.state == "start")
-        {
-            //var pos = event.getLocation();
-            //var dis = pos.sub(this.lastPoint).mag();
-            //if(dis>10)
-            //{
-            //    var dir = pos.sub(this.lastPoint).normalize();
-            //    if(dis>this.rocker.width/2)
-            //        dis = this.rocker.width/2;
-            //    this.rocker_ball.position = dir.mul(dis);
-            //    this.move(dir);
-            //}
-        }
+        //if(this.state == "start")
+        //{
+        //    var pos = event.getLocation();
+        //    var dis = pos.sub(this.lastPoint).mag();
+        //    if(dis>10)
+        //    {
+        //        var dir = pos.sub(this.lastPoint).normalize();
+        //        if(dis>this.rocker.width/2)
+        //            dis = this.rocker.width/2;
+        //        this.rocker_ball.position = dir.mul(dis);
+        //        this.move(dir);
+        //    }
+        //}
     },
     touchUp: function(event)
     {
@@ -712,6 +872,41 @@ cc.Class({
         }
     },
 
+    updateTishiAd: function()
+    {
+        this.useShare = false;
+        this.useCoin = false;
+        var cost = cc.config.gameAwards[2].cost;
+        var coin = storage.getCoin();
+        if(coin>=cost)
+        {
+            this.useCoin = true;
+            this.btn_tishi.getChildByName("share").active = false;
+            this.btn_tishi.getChildByName("video").active = false;
+            this.btn_tishi.getChildByName("coin").active = true;
+            cc.find("coin/num",this.btn_tishi).getComponent(cc.Label).string = cost;
+            return;
+        }
+
+        if(cc.GAME.share)
+        {
+            var rad = parseInt(cc.GAME.baozhaTishiAd);
+            if(Math.random()*100 < rad)
+            {
+                this.useShare = true;
+                this.btn_tishi.getChildByName("share").active = true;
+                this.btn_tishi.getChildByName("video").active = false;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+            else
+            {
+                this.btn_tishi.getChildByName("share").active = false;
+                this.btn_tishi.getChildByName("video").active = true;
+                this.btn_tishi.getChildByName("coin").active = false;
+            }
+        }
+    },
+
 
     click: function(event,data)
     {
@@ -722,6 +917,61 @@ cc.Class({
         else if(data == "replay")
         {
             this.resetData();
+        }
+        else if(data == "tishi")
+        {
+            var self = this;
+            if(this.useCoin)
+            {
+                var cost = cc.config.gameAwards[2].cost;
+                var coin = storage.getCoin();
+                if(coin>=cost)
+                {
+                    coin -= cost;
+                    storage.setCoin(coin);
+                    storage.uploadCoin();
+                    this.updateUI();
+                    this.showTips();
+                }
+                else
+                {
+                    cc.res.showToast("金币不足！");
+                }
+            }
+            else
+            {
+                if(this.useShare)
+                {
+                    cc.sdk.share(function(r){
+                        if(r)
+                        {
+                            self.showTips();
+                        }
+                    },"baozhaTishiAd");
+                }
+                else
+                {
+                    cc.sdk.showVedio(function(r){
+                        if(r)
+                        {
+                            self.showTips();
+                        }
+                    });
+                }
+            }
+            this.updateTishiAd();
+        }
+        else if(data == "share")
+        {
+            if(this.isHasHelp)
+            {
+                this.showTips();
+            }
+            else
+            {
+                cc.sdk.share(null,"game&snakeId=3&level="+this.level);
+            }
+
         }
 
         cc.log(data);
