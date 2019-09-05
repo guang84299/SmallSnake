@@ -97,7 +97,7 @@ cc.Class({
             this.loadres();
 
         var self = this;
-        qianqista.init("wx0444b5396e3d18ba","d0c3b794e0680ff86984c9076b73c89a","我的蛇啊",function(){
+        qianqista.init("1109746736","zCTPw2URKXPKaCTO","我的蛇啊-QQ",function(){
             var score = storage.getScore();
             sdk.uploadScore(score,self.initNet.bind(self));
         });

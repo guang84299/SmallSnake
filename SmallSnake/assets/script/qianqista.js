@@ -434,7 +434,7 @@ module.exports = {
                 success: function(res)
                 {
                     console.log('login:', res);
-                    self.sendRequest("jscode2session",{gameId:self.gameId,gameSecret:self.secret,jsCode:res.code},function(r){
+                    self.sendRequest("jscode2sessionqq",{gameId:self.gameId,gameSecret:self.secret,jsCode:res.code},function(r){
                         if(r.state == 200)
                         {
                             var msg = JSON.parse(r.msg);
@@ -445,7 +445,7 @@ module.exports = {
                             if(callback)
                                 callback();
                         }
-                        console.log('jscode2session:', r);
+                        console.log('jscode2sessionqq:', r);
                     });
                 }
             });
@@ -464,7 +464,7 @@ module.exports = {
             var self = this;
             if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
             {
-                self.httpPost("groupid",{encryptedData:encryptedData,sessionkey:self.session_key,iv:iv},function(r){
+                self.httpPost("groupidqq",{encryptedData:encryptedData,sessionkey:self.session_key,iv:iv},function(r){
                     if(r.state == 200)
                     {
                         var msg = r.data;
@@ -483,7 +483,7 @@ module.exports = {
                         }
 
                     }
-                    console.log('groupid:', r);
+                    console.log('groupidqq:', r);
                 });
             }
         }

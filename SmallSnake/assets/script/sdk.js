@@ -25,7 +25,7 @@ module.exports = {
 
     vibrate: function(isLong)
     {
-        if(storage.getVibrate() == 1 && (cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS))
+        if(storage.getVibrate() == 100 && (cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS))
         {
             if(isLong)
             {
@@ -42,7 +42,7 @@ module.exports = {
     {
         if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
         {
-            wx.postMessage({ message: "updateScore",score:Math.floor(score) });
+            qq.postMessage({ message: "updateScore",score:Math.floor(score) });
             if(callback)
                 callback();
         }
@@ -115,7 +115,7 @@ module.exports = {
     videoLoad: function()
     {
         var self = this;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             this.rewardedVideoAd = wx.createRewardedVideoAd({ adUnitId:'adunit-af6fe34f36bab058'});
             this.rewardedVideoAd.onLoad(function(){
@@ -148,7 +148,7 @@ module.exports = {
     {
         var self = this;
         this.videocallback = callback;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             this.rewardedVideoAd.show().catch(function(err){
                 self.rewardedVideoAd.load().then(function(){
@@ -168,14 +168,15 @@ module.exports = {
         else
         {
             if(callback)
-                callback(true);
+                callback(false);
+            cc.res.showToast("暂未开放！");
         }
     },
 
     showBanner: function(node,callback,isHide)
     {
         this.hideBanner();
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             //var dpi = cc.view.getDevicePixelRatio();
             var s = cc.view.getFrameSize();
@@ -220,7 +221,7 @@ module.exports = {
 
     hideBanner: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             if(this.bannerAd)
                 this.bannerAd.destroy();
@@ -229,7 +230,7 @@ module.exports = {
 
     getBannerDis: function(node)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             if(this.bannerAd && node)
             {
@@ -245,7 +246,7 @@ module.exports = {
 
     moveBanner: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(cc.sys.os == cc.sys.OS_ANDROID && cc.sys.os == cc.sys.OS_IOS)
         {
             if(this.bannerAd && this.bannerAd.res)
             {

@@ -214,7 +214,7 @@ cc.Class({
             keyList:["snake_rank"],
             success: function(res)
             {
-                console.log(res);
+                console.error("getUserCloudStorage",res);
                 if(res.KVDataList.length == 0)
                 {
                     self.setUserRank(0,new Date().getTime(),0,0,0);
@@ -261,11 +261,12 @@ cc.Class({
             {
                 self.kvdata.wxgame.score = score;
                 self.getFriendRank();
-                cc.log(res);
+                console.error("setUserCloudStorage",res);
             },
             fail: function(res)
             {
                 cc.log(res);
+                console.error("setUserCloudStorage",res);
             }
         });
     },
