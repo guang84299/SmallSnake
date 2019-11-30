@@ -831,6 +831,7 @@ cc.Class({
 
     willpass: function(pos,dir)
     {
+        this.isPass = true;
         this.node.parent = this.game.exit_mask;
         this.head.position = this.head.position.sub(this.game.exit.position);
         this.head.stopAllActions();
