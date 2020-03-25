@@ -25,22 +25,24 @@ module.exports = {
 
     vibrate: function(isLong)
     {
-        if(storage.getVibrate() == 1 && (cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS))
+        if(storage.getVibrate() == 1)
         {
-            if(isLong)
+            if(window["wx"])
             {
-                wx.vibrateLong({});
+                if(isLong) wx.vibrateLong({});
+                else wx.vibrateShort({});
             }
             else
             {
-                wx.vibrateShort({});
+                if(isLong) $SF.Ga.startVib (100);
+                else $SF.Ga.startVib (1000);
             }
         }
     },
 
     uploadScore: function(score,callback)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             wx.postMessage({ message: "updateScore",score:Math.floor(score) });
             if(callback)
@@ -55,14 +57,14 @@ module.exports = {
 
     openRank: function(worldrank)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             wx.postMessage({ message: "friendRank",worldrank:worldrank });
         }
     },
     closeRank: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             wx.postMessage({ message: "closeRank" });
         }
@@ -70,14 +72,14 @@ module.exports = {
 
     openFuhuoRank: function(score)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             //wx.postMessage({ message: "fuhuoRank",score:Math.floor(score) });
         }
     },
     closeFuhuoRank: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             //wx.postMessage({ message: "closeFuhuo" });
         }
@@ -85,7 +87,7 @@ module.exports = {
 
     getRankList: function(callback)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(callback)
                 callback(null);
@@ -100,7 +102,7 @@ module.exports = {
     getChaoyueRank: function(callback,score)
     {
         var self = this;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(callback)
                 callback(null);
@@ -115,7 +117,7 @@ module.exports = {
     videoLoad: function()
     {
         var self = this;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             this.rewardedVideoAd = wx.createRewardedVideoAd({ adUnitId:'adunit-af6fe34f36bab058'});
             this.rewardedVideoAd.onLoad(function(){
@@ -144,11 +146,11 @@ module.exports = {
         }
     },
 
-    showVedio: function(callback)
+    showVedio: function(callback,postId)
     {
         var self = this;
         this.videocallback = callback;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             this.rewardedVideoAd.show().catch(function(err){
                 self.rewardedVideoAd.load().then(function(){
@@ -167,15 +169,34 @@ module.exports = {
         }
         else
         {
-            if(callback)
-                callback(true);
+            cc.GAME.hasVideo = true;
+            cc.res.openUI("vedio");
+            $SF.Ga.playRewardVideo(postId, function(r){
+                if(r == 2)
+                {
+                    if(callback)
+                        callback(true);
+                }
+                else
+                {
+                    if(callback)
+                        callback(false);
+                    cc.res.showToast("视频准备中...请稍后再试");
+                }
+
+                var comp  = cc.find("Canvas").getComponent("main") || cc.find("Canvas").getComponent("game1")
+                || cc.find("Canvas").getComponent("game2") || cc.find("Canvas").getComponent("game3");
+                comp.scheduleOnce(function(){
+                    cc.res.closeUI("vedio");
+                },0.2);
+            },false);
         }
     },
 
-    showBanner: function(node,callback,isHide)
+    showBanner: function(postId,node,callback,isHide)
     {
         this.hideBanner();
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             //var dpi = cc.view.getDevicePixelRatio();
             var s = cc.view.getFrameSize();
@@ -216,20 +237,28 @@ module.exports = {
             });
             this.bannerAd.show();
         }
+        else
+        {
+            $SF.Ga.showBa(postId, false, function(r){});
+        }
     },
 
     hideBanner: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(this.bannerAd)
                 this.bannerAd.destroy();
+        }
+        else
+        {
+            $SF.Ga.hideBa();
         }
     },
 
     getBannerDis: function(node)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(this.bannerAd && node)
             {
@@ -245,7 +274,7 @@ module.exports = {
 
     moveBanner: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(this.bannerAd && this.bannerAd.res)
             {
@@ -257,7 +286,7 @@ module.exports = {
 
     share: function(callback,channel)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             var query = "fromid="+cc.qianqista.openid+"&channel="+channel;
             var title = "我家的蛇动了凡心，让您贱笑了！";
@@ -305,7 +334,7 @@ module.exports = {
 
     skipGame: function(gameId,url)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(gameId)
             {
@@ -331,7 +360,7 @@ module.exports = {
 
     shortcut: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             //var extendInfo = "shortcut";//扩展字段
             //BK.QQ.createShortCut(extendInfo)
@@ -340,7 +369,7 @@ module.exports = {
 
     getUserInfo: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             wx.getSetting({
                 success: function (res) {
@@ -402,7 +431,7 @@ module.exports = {
 
     judgePower: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             return cc.qianqista.power == 1 ? true : false;
         }
@@ -411,7 +440,7 @@ module.exports = {
 
     openSetting: function(callback)
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             //cc.sdk.main.openQuanXian();
             //var quan = self.node_quanxian.quan;
@@ -464,7 +493,7 @@ module.exports = {
 
     showClub: function()
     {
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             if(!this.clubBtn)
             {

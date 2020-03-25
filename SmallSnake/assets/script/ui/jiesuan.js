@@ -61,6 +61,12 @@ cc.Class({
         {
             this.label_name.string = cc.qianqista.userName;
         }
+
+        if(!this.isLingqu)
+        {
+            this.coin_num.string = storage.getCoin()+this.award_coin;
+            this.jifen_num.string = storage.getScore()+this.award_score;
+        }
     },
 
     win: function()
@@ -152,7 +158,7 @@ cc.Class({
             storage.uploadCoin();
             storage.uploadScore();
         }
-
+        this.updateUI();
         cc.res.showToast("金币+"+this.award_coin+"  积分+"+this.award_score);
     },
 
@@ -209,7 +215,7 @@ cc.Class({
         //        cc.scaleTo(0.2,1.1).easing(cc.easeSineOut()),
         //        cc.scaleTo(0.2,1).easing(cc.easeSineOut())
         //    ));
-        cc.sdk.showBanner();
+        cc.sdk.showBanner(20003);
 
         storage.playSound(res.audio_win);
     },
@@ -266,7 +272,7 @@ cc.Class({
                     {
                         self.lingqu(true);
                     }
-                });
+                },10005);
             }
         }
 

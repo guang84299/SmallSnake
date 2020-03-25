@@ -116,11 +116,12 @@ cc.Class({
 
         storage.setQianDaoNum((this.qiandaoNum+1));
         storage.uploadQianDaoNum();
+        storage.uploadCoin();
 
         res.showToast("金币+"+award);
         this.updateUI();
 
-        //this.game.task.updateUI();
+        this.game.updateUI();
         //cc.res.showCoinAni();
     },
 
@@ -138,7 +139,7 @@ cc.Class({
         //        cc.scaleTo(0.2,1.1).easing(cc.easeSineOut()),
         //        cc.scaleTo(0.2,1).easing(cc.easeSineOut())
         //    ));
-        cc.sdk.showBanner();
+        cc.sdk.showBanner(20004);
 
     },
 
@@ -187,7 +188,7 @@ cc.Class({
                     {
                         self.lingqu(true);
                     }
-                });
+                },10006);
             }
 
         }

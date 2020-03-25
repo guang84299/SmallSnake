@@ -60,7 +60,7 @@ module.exports = {
         this.initcallback = initcallback;
         this.showcallback = showcallback;
         var self = this;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             var opts = wx.getLaunchOptionsSync();
             if(opts)
@@ -166,7 +166,7 @@ module.exports = {
         }
         else
         {
-            if(cc.sys.browserType == "chrome")
+            if(cc.sys.browserType == "chrome1")
             {
                 this.openid = "test001";
                 this.userName = "哈哈";
@@ -176,12 +176,26 @@ module.exports = {
             }
             else
             {
-                this.openid = "test002";
+                var openid = $SF.sfLocalStorage.getItem("openid");
+                if(!openid)
+                {
+                    openid = this.guid();
+                    $SF.sfLocalStorage.setItem("openid",openid);
+                }
+                this.openid = openid;
                 this.userName = "嘿嘿";
                 this.avatarUrl = "https://game.7q7q.top/img/wxgame/1b6474f6563845c4a5afd5b9a797c017.png";
                 this.fromid = "test001";
             }
         }
+    },
+
+    guid:function() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
     },
 
     setHideCallback: function(hidecallback)
@@ -428,7 +442,7 @@ module.exports = {
     getOpenId: function(callback)
     {
         var self = this;
-        if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+        if(window["wx"])
         {
             wx.login({
                 success: function(res)
@@ -462,7 +476,7 @@ module.exports = {
         if(this.state == 1)
         {
             var self = this;
-            if(cc.sys.os == cc.sys.OS_ANDROID || cc.sys.os == cc.sys.OS_IOS)
+            if(window["wx"])
             {
                 self.httpPost("groupid",{encryptedData:encryptedData,sessionkey:self.session_key,iv:iv},function(r){
                     if(r.state == 200)
@@ -546,7 +560,7 @@ module.exports = {
             }
         };
         xhr.open("POST", requestURL, true);
-        //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         if (cc.sys.isNative) {
             xhr.setRequestHeader("Accept-Encoding", "gzip,deflate");
         }
@@ -555,18 +569,18 @@ module.exports = {
         // method and before calling the send() method.
         xhr.timeout = 5000;// 5 seconds for timeout
 
-        //var datas = "";
-        //var i = 0;
-        //for (var k in params) {
-        //    if (i != 0) {
-        //        datas += "&";
-        //    }
-        //    datas += k + "=" + params[k];
-        //    i++;
-        //}
-        //
-        //xhr.send(datas);
-        xhr.send(params);
+        var datas = "";
+        var i = 0;
+        for (var k in params) {
+           if (i != 0) {
+               datas += "&";
+           }
+           datas += k + "=" + params[k];
+           i++;
+        }
+        
+        xhr.send(datas);
+        // xhr.send(params);
     },
 
     pdatas: function(callback)

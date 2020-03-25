@@ -291,6 +291,8 @@ cc.Class({
         {
             res.openUI("help",null,res.conf_pilot[this.level-1].text);
         }
+
+        $SF.Ga.onGameStart(function(){});
     },
 
     converToRoadPos: function(pos)
@@ -303,7 +305,7 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
-
+        $SF.Ga.onGameEnd({score: 3,level: this.level,win: 1},function(){});
         cc.qianqista.event("爆炸蛇胜利关卡_"+this.level);
 
         this.state = "stop";
@@ -328,7 +330,7 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
-
+        $SF.Ga.onGameEnd({score: 3,level: this.level,win: 2},function(){});
         cc.qianqista.event("爆炸蛇失败关卡_"+this.level);
 
         this.state = "stop";
@@ -912,10 +914,12 @@ cc.Class({
     {
         if(data == "home")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             cc.director.loadScene("main");
         }
         else if(data == "replay")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             this.resetData();
         }
         else if(data == "tishi")
@@ -956,7 +960,7 @@ cc.Class({
                         {
                             self.showTips();
                         }
-                    });
+                    },10003);
                 }
             }
             this.updateTishiAd();

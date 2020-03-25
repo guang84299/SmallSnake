@@ -107,25 +107,25 @@ module.exports = {
 
     setFirst: function(first)
     {
-        cc.sys.localStorage.setItem(this.pfix+"first",first);
+        $SF.sfLocalStorage.setItem(this.pfix+"first",first);
     },
 
     getFirst: function()
     {
-        var first = cc.sys.localStorage.getItem(this.pfix+"first");
+        var first = $SF.sfLocalStorage.getItem(this.pfix+"first");
         first = first ? first : 0;
         return Number(first);
     },
 
     setCoin: function(coin)
     {
-        cc.sys.localStorage.setItem(this.pfix+"coin",Math.floor(coin));
+        $SF.sfLocalStorage.setItem(this.pfix+"coin",Math.floor(coin));
 
     },
 
     getCoin: function()
     {
-        var coin = cc.sys.localStorage.getItem(this.pfix+"coin");
+        var coin = $SF.sfLocalStorage.getItem(this.pfix+"coin");
         coin = coin ? coin : 0;
         return Number(coin);
     },
@@ -140,13 +140,13 @@ module.exports = {
 
     setScore: function(score)
     {
-        cc.sys.localStorage.setItem(this.pfix+"score",Math.floor(score));
+        $SF.sfLocalStorage.setItem(this.pfix+"score",Math.floor(score));
 
     },
 
     getScore: function()
     {
-        var score = cc.sys.localStorage.getItem(this.pfix+"score");
+        var score = $SF.sfLocalStorage.getItem(this.pfix+"score");
         score = score ? score : 0;
         return Number(score);
     },
@@ -161,36 +161,36 @@ module.exports = {
 
     setChoujiangNum: function(num)
     {
-        cc.sys.localStorage.setItem(this.pfix+"choujiang_num",num);
+        $SF.sfLocalStorage.setItem(this.pfix+"choujiang_num",num);
     },
 
     getChoujiangNum: function()
     {
-        var num = cc.sys.localStorage.getItem(this.pfix+"choujiang_num");
+        var num = $SF.sfLocalStorage.getItem(this.pfix+"choujiang_num");
         num = num ? num : 0;
         return Number(num);
     },
 
     setChoujiangTime: function(time)
     {
-        cc.sys.localStorage.setItem(this.pfix+"choujiang_time",time);
+        $SF.sfLocalStorage.setItem(this.pfix+"choujiang_time",time);
     },
 
     getChoujiangTime: function()
     {
-        var time = cc.sys.localStorage.getItem(this.pfix+"choujiang_time");
+        var time = $SF.sfLocalStorage.getItem(this.pfix+"choujiang_time");
         time = time ? time : 0;
         return Number(time);
     },
 
     setLevel: function(type,lv)
     {
-        cc.sys.localStorage.setItem(this.pfix+type+"_level",lv);
+        $SF.sfLocalStorage.setItem(this.pfix+type+"_level",lv);
     },
 
     getLevel: function(type)
     {
-        var lv = cc.sys.localStorage.getItem(this.pfix+type+"_level");
+        var lv = $SF.sfLocalStorage.getItem(this.pfix+type+"_level");
         lv = lv ? lv : 1;
         return Number(lv);
     },
@@ -206,12 +206,12 @@ module.exports = {
 
     setLoginTime: function(time)
     {
-        cc.sys.localStorage.setItem(this.pfix+"login_time",time);
+        $SF.sfLocalStorage.setItem(this.pfix+"login_time",time);
     },
 
     getLoginTime: function()
     {
-        var time = cc.sys.localStorage.getItem(this.pfix+"login_time");
+        var time = $SF.sfLocalStorage.getItem(this.pfix+"login_time");
         time = time ? time : 0;
         return Number(time);
     },
@@ -226,12 +226,12 @@ module.exports = {
 
     setLoginDay: function(day)
     {
-        cc.sys.localStorage.setItem(this.pfix+"login_day",day);
+        $SF.sfLocalStorage.setItem(this.pfix+"login_day",day);
     },
 
     getLoginDay: function()
     {
-        var day = cc.sys.localStorage.getItem(this.pfix+"login_day");
+        var day = $SF.sfLocalStorage.getItem(this.pfix+"login_day");
         day = day ? day : 0;
         return Number(day);
     },
@@ -246,12 +246,12 @@ module.exports = {
 
     setQianDaoNum: function(num)
     {
-        cc.sys.localStorage.setItem(this.pfix+"qiandao_num",num);
+        $SF.sfLocalStorage.setItem(this.pfix+"qiandao_num",num);
     },
 
     getQianDaoNum: function()
     {
-        var num = cc.sys.localStorage.getItem(this.pfix+"qiandao_num");
+        var num = $SF.sfLocalStorage.getItem(this.pfix+"qiandao_num");
         num = num ? num : 0;
         return Number(num);
     },
@@ -266,7 +266,7 @@ module.exports = {
 
     //setHelp: function(help)
     //{
-    //    cc.sys.localStorage.setItem(this.pfix+"help",help);
+    //    $SF.sfLocalStorage.setItem(this.pfix+"help",help);
     //},
 
     isHelp: function(snakeId,level,callback)
@@ -319,7 +319,7 @@ module.exports = {
 
     //getHelp: function()
     //{
-    //    var help = cc.sys.localStorage.getItem(this.pfix+"help");
+    //    var help = $SF.sfLocalStorage.getItem(this.pfix+"help");
     //    help = help ? help : "[]";
     //    if(typeof help == "object")
     //        return help;
@@ -337,12 +337,12 @@ module.exports = {
 
     setGameNum: function(num)
     {
-        cc.sys.localStorage.setItem(this.pfix+"game_num",num);
+        $SF.sfLocalStorage.setItem(this.pfix+"game_num",num);
     },
 
     getGameNum: function()
     {
-        var num = cc.sys.localStorage.getItem(this.pfix+"game_num");
+        var num = $SF.sfLocalStorage.getItem(this.pfix+"game_num");
         num = num ? num : 0;
         return Number(num);
     },
@@ -350,11 +350,11 @@ module.exports = {
 
     setTest: function(test)
     {
-        cc.sys.localStorage.setItem(this.pfix+"test",test);
+        $SF.sfLocalStorage.setItem(this.pfix+"test",test);
     },
     getTest: function()
     {
-        var test = cc.sys.localStorage.getItem(this.pfix+"test");
+        var test = $SF.sfLocalStorage.getItem(this.pfix+"test");
         test = test ? test : 0;
         return Number(test);
     },
@@ -363,55 +363,55 @@ module.exports = {
 
     setMusic: function(music)
     {
-        cc.sys.localStorage.setItem(this.pfix+"music",music);
+        $SF.sfLocalStorage.setItem(this.pfix+"music",music);
     },
     getMusic: function()
     {
-        var music = cc.sys.localStorage.getItem(this.pfix+"music");
+        var music = $SF.sfLocalStorage.getItem(this.pfix+"music");
         music = music ? music : 0;
         return Number(music);
     },
 
     setSound: function(sound)
     {
-        cc.sys.localStorage.setItem(this.pfix+"sound",sound);
+        $SF.sfLocalStorage.setItem(this.pfix+"sound",sound);
     },
     getSound: function()
     {
-        var sound = cc.sys.localStorage.getItem(this.pfix+"sound");
+        var sound = $SF.sfLocalStorage.getItem(this.pfix+"sound");
         sound = sound ? sound : 0;
         return Number(sound);
     },
 
     setVibrate: function(vibrate)
     {
-        cc.sys.localStorage.setItem(this.pfix+"vibrate",vibrate);
+        $SF.sfLocalStorage.setItem(this.pfix+"vibrate",vibrate);
     },
     getVibrate: function()
     {
-        var vibrate = cc.sys.localStorage.getItem(this.pfix+"vibrate");
+        var vibrate = $SF.sfLocalStorage.getItem(this.pfix+"vibrate");
         vibrate = vibrate ? vibrate : 0;
         return Number(vibrate);
     },
 
     setYinDao: function(yindao)
     {
-        cc.sys.localStorage.setItem(this.pfix+"yindao",yindao);
+        $SF.sfLocalStorage.setItem(this.pfix+"yindao",yindao);
     },
     getYinDao: function()
     {
-        var yindao = cc.sys.localStorage.getItem(this.pfix+"yindao");
+        var yindao = $SF.sfLocalStorage.getItem(this.pfix+"yindao");
         yindao = yindao ? yindao : 0;
         return Number(yindao);
     },
 
     setInviteLnum: function(num)
     {
-        cc.sys.localStorage.setItem(this.pfix+"invite_lnum",num);
+        $SF.sfLocalStorage.setItem(this.pfix+"invite_lnum",num);
     },
     getInviteLnum: function()
     {
-        var num = cc.sys.localStorage.getItem(this.pfix+"invite_lnum");
+        var num = $SF.sfLocalStorage.getItem(this.pfix+"invite_lnum");
         num = num ? num : 0;
         return Number(num);
     },

@@ -703,7 +703,7 @@ cc.Class({
             cc.res.setSpriteFrame("images/game1/head",this.head);
 
         var iswin = this.judgeWin(toPos,dir);
-
+        this.isPass = iswin;
         if(!iswin)
         {
             var mTime = 0.1;

@@ -93,11 +93,14 @@ cc.Class({
         this.loadCount = 0;
 
         this.nowtime = new Date().getTime();
-        for(var i=0;i<3;i++)
-            this.loadres();
+        // for(var i=0;i<3;i++)
+        //     this.loadres();
 
         var self = this;
-        qianqista.init("wx0444b5396e3d18ba","d0c3b794e0680ff86984c9076b73c89a","我的蛇啊",function(){
+        $SF.Ga.init({ id: 10015, complete: function(){
+            self.scheduleOnce(self.loadres.bind(self),0.5);
+        } });
+        qianqista.init("smallsnakeid","smallsnake","我的蛇啊",function(){
             var score = storage.getScore();
             sdk.uploadScore(score,self.initNet.bind(self));
         });
@@ -144,6 +147,8 @@ cc.Class({
         this.progressBar.progress = this.progress;
         this.progressTips.string = "加载中 " + Math.floor(this.completedCount/this.totalCount*100)+"%";
 
+        $SF.Ga.onLoadingProgress({ loadCur: Math.floor(this.completedCount/this.totalCount*100), loadMax: 100 });
+
         if(this.completedCount>=this.totalCount)
         {
             this.completeCallback();
@@ -165,7 +170,7 @@ cc.Class({
         //this.progressTips.string = "加载中";
         //this.progressBar.node.active = true;
         //cc.loader.loadResDir("audio", this.progressCallback.bind(this), this.completeCallback2.bind(this));
-
+        $SF.Ga.onLoadingProgress({ loadCur: 100, loadMax: 100 });
         this.startGame();
     },
 

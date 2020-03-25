@@ -219,6 +219,7 @@ cc.Class({
         this.tishiNum = 0;
 
         cc.qianqista.event("画蛇关卡_"+this.level);
+        $SF.Ga.onGameStart(function(){});
     },
 
     converToRoadPos: function(pos)
@@ -232,6 +233,7 @@ cc.Class({
         if(this.state == "stop")
             return;
 
+        $SF.Ga.onGameEnd({score: 1,level: this.level,win: 1},function(){});
         cc.qianqista.event("画蛇胜利关卡_"+this.level);
 
         this.state = "stop";
@@ -256,6 +258,7 @@ cc.Class({
     willGameOver: function()
     {
         this.state = "stop";
+        $SF.Ga.onGameEnd({score: 1,level: this.level,win: 2},function(){});
         cc.qianqista.event("画蛇失败关卡_"+this.level);
         this.resetData();
         //this.node_ui.active = false;
@@ -639,10 +642,12 @@ cc.Class({
     {
         if(data == "home")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             cc.director.loadScene("main");
         }
         else if(data == "replay")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             this.resetData();
         }
         else if(data == "tip")
@@ -683,7 +688,7 @@ cc.Class({
                         {
                             self.showTips();
                         }
-                    });
+                    },10002);
                 }
             }
             this.updateTishiAd();

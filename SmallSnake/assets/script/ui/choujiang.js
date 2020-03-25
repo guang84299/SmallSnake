@@ -156,7 +156,7 @@ cc.Class({
 
 
         cc.qianqista.event("抽奖_打开");
-        cc.sdk.showBanner();
+        cc.sdk.showBanner(20002);
     },
 
     hide: function()
@@ -280,6 +280,7 @@ cc.Class({
 
             var coin = storage.getCoin();
             storage.setCoin(coin+award);
+            storage.uploadCoin();
             res.showToast("金币+"+award);
             //cc.res.showCoinAni();
         }
@@ -289,6 +290,7 @@ cc.Class({
         this.btn_vedio_lingqu.node.active = false;
         this.btn_lingqu.node.active = false;
         this.updateUI();
+        this.game.updateUI();
     },
 
     click: function(event,data)
@@ -326,7 +328,7 @@ cc.Class({
                     {
                         self.lingqu(true);
                     }
-                });
+                },10004);
             }
             cc.qianqista.event("抽奖_2倍领取");
         }

@@ -273,6 +273,9 @@ cc.Class({
 
     startGame: function()
     {
+        if(this.state != "reday")
+        $SF.Ga.onGameStart(function(){});
+
         storage.stopMusic();
         this.initSnake();
 
@@ -320,7 +323,7 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
-
+        $SF.Ga.onGameEnd({score: 0,level: this.level,win: 1},function(){});
         cc.qianqista.event("蛇求生胜利关卡_"+this.level);
 
         this.state = "stop";
@@ -347,8 +350,9 @@ cc.Class({
 
     willGameOver: function()
     {
+        if(this.state == "stop") return;
         this.state = "stop";
-
+        $SF.Ga.onGameEnd({score: 0,level: this.level,win: 2},function(){});
         cc.qianqista.event("蛇求生失败关卡_"+this.level);
         this.resetData();
         //this.node_ui.active = false;
@@ -452,6 +456,7 @@ cc.Class({
     {
         if(data == "home")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             cc.director.loadScene("main");
         }
         else if(data == "top")
@@ -472,6 +477,7 @@ cc.Class({
         }
         else if(data == "replay")
         {
+            $SF.Ga.onGameEnd({score: 0,level: this.level,win: 3},function(){});
             this.replayNum ++;
             this.resetData();
         }
@@ -520,7 +526,7 @@ cc.Class({
                             self.isShowTishi = true;
                             self.schedule(self.showTips.bind(self),0.2,self.tipItems.length);
                         }
-                    });
+                    },10001);
                 }
             }
             this.updateTishiAd();

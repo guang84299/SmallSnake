@@ -37,7 +37,7 @@ cc.Class({
         if(test == 0 || test == 2)
             res.openUI("test");
         else
-            sdk.showBanner();
+            sdk.showBanner(20001);
     },
 
 
