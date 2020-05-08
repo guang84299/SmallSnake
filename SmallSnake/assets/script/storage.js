@@ -416,6 +416,16 @@ module.exports = {
         return Number(num);
     },
 
+    setVideoPath: function(path)
+    {
+        cc.sys.localStorage.setItem(this.pfix+"videoPath",path);
+    },
+    getVideoPath: function()
+    {
+        var path = cc.sys.localStorage.getItem(this.pfix+"videoPath");
+        path = path ? path : undefined;
+        return path;
+    },
 
     scientificToNumber: function(num) {
         var str = num.toString();

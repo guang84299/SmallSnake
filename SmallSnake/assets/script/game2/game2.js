@@ -219,6 +219,9 @@ cc.Class({
         this.tishiNum = 0;
 
         cc.qianqista.event("画蛇关卡_"+this.level);
+        cc.sdk.gameRecorderStop(function(){
+            cc.sdk.gameRecorderStart();
+        });
     },
 
     converToRoadPos: function(pos)
@@ -243,8 +246,9 @@ cc.Class({
             storage.setLevel(2,this.level);
         }
 
-
-        res.openUI("jiesuan",null,"win");
+        cc.sdk.gameRecorderStop(function(){
+            res.openUI("jiesuan",null,"win");
+        });
     },
 
     nextLevel: function()
@@ -639,7 +643,9 @@ cc.Class({
     {
         if(data == "home")
         {
-            cc.director.loadScene("main");
+            cc.sdk.gameRecorderStop(function(){
+                cc.director.loadScene("main");
+            });
         }
         else if(data == "replay")
         {
@@ -696,7 +702,10 @@ cc.Class({
             }
             else
             {
-                cc.sdk.share(null,"game&snakeId=2&level="+this.level);
+                cc.sdk.gameRecorderStop(function(){
+                    cc.sdk.share();
+                });
+                // cc.sdk.share(null,"game&snakeId=2&level="+this.level);
             }
 
         }

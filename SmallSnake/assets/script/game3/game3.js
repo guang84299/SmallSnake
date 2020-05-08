@@ -291,6 +291,10 @@ cc.Class({
         {
             res.openUI("help",null,res.conf_pilot[this.level-1].text);
         }
+
+        cc.sdk.gameRecorderStop(function(){
+            cc.sdk.gameRecorderStart();
+        });
     },
 
     converToRoadPos: function(pos)
@@ -316,7 +320,9 @@ cc.Class({
         }
 
 
-        res.openUI("jiesuan",null,"win");
+        cc.sdk.gameRecorderStop(function(){
+            res.openUI("jiesuan",null,"win");
+        });
     },
 
     nextLevel: function()
@@ -912,7 +918,9 @@ cc.Class({
     {
         if(data == "home")
         {
-            cc.director.loadScene("main");
+            cc.sdk.gameRecorderStop(function(){
+                cc.director.loadScene("main");
+            });
         }
         else if(data == "replay")
         {
@@ -969,7 +977,10 @@ cc.Class({
             }
             else
             {
-                cc.sdk.share(null,"game&snakeId=3&level="+this.level);
+                cc.sdk.gameRecorderStop(function(){
+                    cc.sdk.share();
+                });
+                // cc.sdk.share(null,"game&snakeId=3&level="+this.level);
             }
 
         }

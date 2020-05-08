@@ -114,7 +114,7 @@ cc.Class({
             }
 
         }
-        this.share_btn.active = cc.GAME.share;
+        // this.share_btn.active = cc.GAME.share;
     },
 
 

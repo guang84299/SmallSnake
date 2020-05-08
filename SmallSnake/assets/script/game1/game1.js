@@ -284,6 +284,10 @@ cc.Class({
         this.btn_replay.stopAllActions();
 
         cc.qianqista.event("蛇求生关卡_"+this.level);
+
+        cc.sdk.gameRecorderStop(function(){
+            cc.sdk.gameRecorderStart();
+        });
     },
 
     judgePass: function(pos)
@@ -332,10 +336,10 @@ cc.Class({
         }
 
 
-
-        res.openUI("jiesuan",null,"win");
-
-
+        cc.sdk.gameRecorderStop(function(){
+            res.openUI("jiesuan",null,"win");
+        });
+        
         //storage.playSound(res.audio_1st);
     },
 
@@ -452,7 +456,9 @@ cc.Class({
     {
         if(data == "home")
         {
-            cc.director.loadScene("main");
+            cc.sdk.gameRecorderStop(function(){
+                cc.director.loadScene("main");
+            });
         }
         else if(data == "top")
         {
@@ -534,7 +540,10 @@ cc.Class({
             }
             else
             {
-                cc.sdk.share(null,"game&snakeId=1&level="+this.level);
+                cc.sdk.gameRecorderStop(function(){
+                    cc.sdk.share();
+                });
+                // cc.sdk.share(null,"game&snakeId=1&level="+this.level);
             }
 
         }

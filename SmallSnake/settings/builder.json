@@ -40,9 +40,9 @@
   "webOrientation": "auto",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "https://www.7q7q.top/subPackage/snake107",
-    "appid": "wx0444b5396e3d18ba",
+    "appid": "tt2583533ebaa6ce7e",
     "orientation": "portrait",
-    "subContext": "rank"
+    "subContext": ""
   },
   "xxteaKey": "741dcbbb-e5c7-4b",
   "zipCompressJs": true
