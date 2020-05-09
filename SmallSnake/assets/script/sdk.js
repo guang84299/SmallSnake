@@ -564,7 +564,8 @@ module.exports = {
                 })
 
                 recorder.onStop(res =>{
-                    storage.setVideoPath(res.videoPath);
+                    if(this.isSaveVedio)
+                        storage.setVideoPath(res.videoPath);
                     console.log(res.videoPath);
                     if(this.recordercallback) this.recordercallback();
                     this.recordering = false;
@@ -583,6 +584,9 @@ module.exports = {
             this.recordercallback = null;
             this.recordering = true;
             storage.setVideoPath("");
+            this.recorderTime = new Date().getTime();
+            this.isSaveVedio = true;
+            this.isClickCancal = false;
         }
         
     },
@@ -593,8 +597,14 @@ module.exports = {
             this.recordercallback = callback;
             if(this.recordering)
             {
-                this.recordering = false;
-                if(this.recorderManage)this.recorderManage.stop();
+                if(!this.isClickCancal)
+                {
+                    this.isClickCancal = true;
+                    // this.recordering = false;
+                    if(new Date().getTime()-this.recorderTime<3000) this.isSaveVedio = false;
+                    if(this.recorderManage)this.recorderManage.stop();
+                    console.log('主动停止录屏');
+                }
             }
             else
             {

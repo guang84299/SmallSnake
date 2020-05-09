@@ -73,7 +73,8 @@ cc.Class({
         if(cc.GAME.share)
         {
             var rad = parseInt(cc.GAME.jiesuanAd);
-            if(Math.random()*100 < rad)
+            var videoPath = storage.getVideoPath();
+            if(Math.random()*100 < rad && videoPath)
             {
                 this.useShare = true;
                 this.btn_lingqu.getChildByName("share").active = true;

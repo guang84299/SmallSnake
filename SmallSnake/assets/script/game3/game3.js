@@ -307,7 +307,6 @@ cc.Class({
     {
         if(this.state == "stop")
             return;
-
         cc.qianqista.event("爆炸蛇胜利关卡_"+this.level);
 
         this.state = "stop";
@@ -321,6 +320,7 @@ cc.Class({
 
 
         cc.sdk.gameRecorderStop(function(){
+            console.error("exit 4");
             res.openUI("jiesuan",null,"win");
         });
     },
